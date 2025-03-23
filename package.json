@@ -1,0 +1,24 @@
+{
+  "name": "knowledge-card-maker",
+  "version": "1.0.0",
+  "description": "一个制作知识卡片和测试题卡片的工具",
+  "main": "index.html",
+  "scripts": {
+    "start": "serve"
+  },
+  "keywords": [
+    "knowledge",
+    "cards",
+    "quiz",
+    "learning",
+    "education"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "serve": "^14.0.0"
+  },
+  "optionalDependencies": {
+    "html2canvas": "^1.4.1"
+  }
+} 

@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>代码流效果</title>
+    <style>
+        :root {
+            --theme-color: #0fff0f;
+            --theme-color-rgb: 15, 255, 15;
+            --theme-color-glow: rgba(15, 255, 15, 0.75);
+            --theme-color-text: rgba(15, 255, 15, 0.95);
+            --theme-color-shadow: rgba(15, 255, 15, 0.35);
+            --bg-color: rgba(5, 7, 12, 0.98);
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: var(--bg-color);
+            font-family: 'Microsoft YaHei', 'SimHei', sans-serif;
+            background-image: linear-gradient(to bottom, rgba(5, 8, 15, 0.99), rgba(3, 5, 10, 0.99));
+        }
+
+        .code-stream-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 10;
+            overflow: hidden;
+        }
+
+        .code-stream-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 5;
+            overflow: hidden;
+        }
+
+        .code-stream {
+            position: absolute;
+            color: var(--theme-color) !important;
+            text-shadow: 0 0 10px var(--theme-color-glow);
+            font-size: 18px;
+            font-weight: 500;
+            line-height: 1.2;
+            white-space: nowrap;
+            animation-name: codeRain;
+            animation-timing-function: linear;
+            animation-iteration-count: infinite;
+            opacity: 0.8;
+        }
+
+        .lightning {
+            position: fixed;
+            width: 12vw;
+            z-index: 10;
+            opacity: 0.95;
+            filter: drop-shadow(0 0 20px var(--theme-color-glow)) drop-shadow(0 0 30px var(--theme-color-shadow));
+            pointer-events: none;
+            animation: flash 5s infinite;
+            transition: filter 0.5s ease;
+        }
+
+        .lightning-svg {
+            fill: var(--theme-color-glow) !important;
+            opacity: 0.95;
+            filter: brightness(1.3);
+        }
+
+        .left-lightning {
+            left: 8vw;
+            top: 50%;
+            transform: translateY(-50%) rotate(10deg);
+        }
+
+        .right-lightning {
+            right: 8vw;
+            top: 50%;
+            transform: translateY(-50%) rotate(-10deg);
+        }
+
+        .pixel-text-container {
+            position: fixed;
+            z-index: 25;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+            animation: container-float 6s ease-in-out infinite;
+        }
+
+        @keyframes container-float {
+            0%, 100% {
+                transform: translateY(0px) rotateX(0deg) rotateY(0deg);
+            }
+            25% {
+                transform: translateY(-2px) rotateX(1deg) rotateY(0.5deg);
+            }
+            50% {
+                transform: translateY(1px) rotateX(-0.5deg) rotateY(-0.5deg);
+            }
+            75% {
+                transform: translateY(-1px) rotateX(0.5deg) rotateY(1deg);
+            }
+        }
+
+        .pixel-text {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
+            font-weight: 900;
+            color: var(--theme-color-text) !important;
+            text-shadow: 
+                0 0 5px var(--theme-color-glow),
+                0 0 10px var(--theme-color-shadow),
+                0 0 15px var(--theme-color-shadow);
+            pointer-events: none;
+            font-size: 8vw;
+            line-height: 1.2;
+            letter-spacing: 0.05em;
+            text-align: center;
+            width: 10vw;
+            will-change: transform, opacity, filter;
+            margin: 0 2vw;
+            opacity: 0.82;
+            backdrop-filter: blur(1px);
+            -webkit-backdrop-filter: blur(1px);
+            mix-blend-mode: lighten;
+        }
+        
+        @keyframes textGlow {
+            0% {
+                text-shadow: 
+                    0 0 10px var(--theme-color-glow),
+                    0 0 20px var(--theme-color-shadow);
+                transform: scale(1) translateY(0);
+            }
+            50% {
+                text-shadow: 
+                    0 0 15px var(--theme-color-glow),
+                    0 0 25px var(--theme-color-shadow),
+                    0 0 35px var(--theme-color-shadow);
+                transform: scale(1.05) translateY(-5px);
+            }
+            100% {
+                text-shadow: 
+                    0 0 20px var(--theme-color-glow),
+                    0 0 30px var(--theme-color-shadow),
+                    0 0 40px var(--theme-color-shadow);
+                transform: scale(1) translateY(0);
+            }
+        }
+        
+        @keyframes codeRain {
+            from { transform: translateY(-100%); }
+            to { transform: translateY(100vh); }
+        }
+
+        @keyframes flash {
+            0%, 20%, 24%, 55%, 56%, 90%, 100% {
+                opacity: 0.4;
+                filter: drop-shadow(0 0 10px var(--theme-color-glow));
+            }
+            22%, 54%, 78% {
+                opacity: 0.85;
+                filter: drop-shadow(0 0 25px var(--theme-color-glow)) drop-shadow(0 0 40px var(--theme-color-shadow));
+            }
+        }
+
+        /* 全息投影字符 */
+        .pixel-char {
+            display: inline-block;
+            position: relative;
+            white-space: pre;
+            margin: 10px 0;
+            animation: 
+                hologram 4s infinite alternate, 
+                glitch 1.5s infinite,
+                shatter 4s infinite;
+            mix-blend-mode: screen;
+            opacity: 0.95;
+            transform-style: preserve-3d;
+            backface-visibility: hidden;
+            letter-spacing: 0.05em;
+            transition: all 0.15s ease;
+            text-rendering: optimizeSpeed;
+            will-change: transform, opacity, filter, clip-path;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* 增强扫描线效果 */
+        .pixel-char::before {
+            content: '';
+            position: absolute;
+            top: -100%;
+            left: 0;
+            width: 100%;
+            height: 200%;
+            background: linear-gradient(
+                to bottom,
+                rgba(var(--theme-color-rgb), 0) 0%,
+                rgba(var(--theme-color-rgb), 0.2) 40%,
+                rgba(var(--theme-color-rgb), 0.8) 50%,
+                rgba(var(--theme-color-rgb), 0.2) 60%,
+                rgba(var(--theme-color-rgb), 0) 100%
+            );
+            animation: scanLine 2.5s cubic-bezier(0.42, 0, 0.58, 1) infinite;
+            pointer-events: none;
+            z-index: 100;
+            opacity: 0.8;
+            mix-blend-mode: overlay;
+            box-shadow: 0 0 10px rgba(var(--theme-color-rgb), 0.8);
+            filter: blur(0.5px);
+        }
+        
+        /* 随机闪烁效果 - 为每个字符添加不同延迟 */
+        .pixel-char::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(var(--theme-color-rgb), 0.3);
+            animation: randomFlicker 3s steps(1) infinite;
+            mix-blend-mode: screen;
+            z-index: 10;
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        /* 变更扫描线动画为非线性 */
+        @keyframes scanLine {
+            0% {
+                transform: translateY(0%);
+                opacity: 0.7;
+            }
+            30% {
+                transform: translateY(35%);
+                opacity: 0.9;
+            }
+            70% {
+                transform: translateY(65%);
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(100%);
+                opacity: 0.7;
+            }
+        }
+        
+        /* 随机闪烁动画 */
+        @keyframes randomFlicker {
+            0%, 100% { opacity: 0; }
+            5% { opacity: 0.2; }
+            10% { opacity: 0; }
+            15% { opacity: 0.1; }
+            20% { opacity: 0.3; }
+            25% { opacity: 0; }
+            30% { opacity: 0.2; }
+            35% { opacity: 0; }
+            40% { opacity: 0.1; }
+            45% { opacity: 0; }
+            50% { opacity: 0.3; }
+            55% { opacity: 0; }
+            60% { opacity: 0.2; }
+            65% { opacity: 0; }
+            70% { opacity: 0.1; }
+            75% { opacity: 0.3; }
+            80% { opacity: 0; }
+            85% { opacity: 0.1; }
+            90% { opacity: 0; }
+            95% { opacity: 0.2; }
+        }
+        
+        /* 错开动画时间，增加随机感 */
+        .left-text .pixel-char:nth-child(1) {
+            animation-delay: 0s, 0.3s, 0s;
+            transform: skewX(-3deg) perspective(500px) rotateY(5deg);
+        }
+        
+        .left-text .pixel-char:nth-child(1)::before {
+            animation-delay: 0.5s;
+        }
+        
+        .left-text .pixel-char:nth-child(1)::after {
+            animation-delay: 0.3s;
+        }
+        
+        .left-text .pixel-char:nth-child(2) {
+            animation-delay: 0.1s, 0.5s, 2s;
+            transform: skewX(3deg) perspective(500px) rotateY(3deg);
+        }
+        
+        .left-text .pixel-char:nth-child(2)::before {
+            animation-delay: 1.2s;
+        }
+        
+        .left-text .pixel-char:nth-child(2)::after {
+            animation-delay: 0.7s;
+        }
+        
+        .right-text .pixel-char:nth-child(1) {
+            animation-delay: 0.2s, 0.7s, 3s;
+            transform: skewY(-2deg) perspective(500px) rotateY(-3deg);
+        }
+        
+        .right-text .pixel-char:nth-child(1)::before {
+            animation-delay: 0.8s;
+        }
+        
+        .right-text .pixel-char:nth-child(1)::after {
+            animation-delay: 0.1s;
+        }
+        
+        .right-text .pixel-char:nth-child(2) {
+            animation-delay: 0.3s, 0.9s, 1s;
+            transform: skewY(2deg) perspective(500px) rotateY(-5deg);
+        }
+        
+        .right-text .pixel-char:nth-child(2)::before {
+            animation-delay: 1.5s;
+        }
+        
+        .right-text .pixel-char:nth-child(2)::after {
+            animation-delay: 0.9s;
+        }
+        
+        /* 全息投影效果 */
+        @keyframes hologram {
+            0%, 100% {
+                opacity: 0.9;
+                filter: 
+                    brightness(1.2) 
+                    drop-shadow(0 0 8px var(--theme-color-glow))
+                    hue-rotate(0deg);
+                transform: translateY(0) scale(1) perspective(500px) rotateX(0deg) translateZ(0px);
+            }
+            25% {
+                opacity: 0.95;
+                filter: 
+                    brightness(1.3) 
+                    drop-shadow(0 0 12px var(--theme-color-glow))
+                    hue-rotate(8deg);
+                transform: translateY(-3px) scale(1.03) perspective(500px) rotateX(3deg) rotateY(1deg) translateZ(2px);
+            }
+            50% {
+                opacity: 0.8;
+                filter: 
+                    brightness(0.9) 
+                    drop-shadow(0 0 5px var(--theme-color-glow))
+                    hue-rotate(-5deg);
+                transform: translateY(2px) scale(0.98) perspective(500px) rotateX(-2deg) rotateY(-1deg) translateZ(-1px);
+            }
+            75% {
+                opacity: 0.85;
+                filter: 
+                    brightness(1.1) 
+                    drop-shadow(0 0 10px var(--theme-color-glow))
+                    hue-rotate(3deg);
+                transform: translateY(-1px) scale(1.01) perspective(500px) rotateX(1deg) rotateY(2deg) translateZ(1px);
+            }
+        }
+        
+        /* 全息投影故障效果 */
+        @keyframes glitch {
+            0%, 100% {
+                transform: translateX(0);
+                clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+                text-shadow: none;
+            }
+            4%, 7% {
+                clip-path: polygon(0 10%, 100% 0, 100% 100%, 0 90%);
+                transform: translateX(-8px) skewX(-5deg);
+                text-shadow: -6px 0 var(--theme-color-glow);
+            }
+            8%, 12% {
+                clip-path: polygon(0 0, 100% 8%, 100% 95%, 0 100%);
+                transform: translateX(8px) skewX(5deg);
+                text-shadow: 6px 0 var(--theme-color-glow);
+            }
+            13%, 16% {
+                clip-path: polygon(0 20%, 100% 15%, 100% 85%, 0 80%);
+                transform: translateX(-5px) skewX(3deg) skewY(2deg);
+                text-shadow: -4px 0 var(--theme-color-glow), 4px 0 var(--theme-color-glow);
+            }
+            17%, 20% {
+                clip-path: polygon(0 15%, 100% 20%, 100% 80%, 0 85%);
+                transform: translateX(3px) skewX(-2deg) skewY(-2deg);
+                text-shadow: 2px 2px var(--theme-color-glow);
+            }
+            21%, 24% {
+                clip-path: polygon(0 5%, 100% 0, 100% 75%, 0 100%);
+                transform: translateX(-4px) skewY(3deg);
+                text-shadow: 3px 0 var(--theme-color-glow), -3px 0 var(--theme-color-glow);
+            }
+            25%, 40% {
+                clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+                transform: translateX(0) skewY(0);
+                text-shadow: none;
+            }
+            45%, 48% {
+                clip-path: polygon(0 18%, 100% 13%, 100% 95%, 0 85%);
+                transform: translateX(5px) skewX(-3deg) translateY(5px);
+                text-shadow: 5px 5px var(--theme-color-glow);
+            }
+            49%, 52% {
+                clip-path: polygon(0 13%, 100% 18%, 100% 100%, 0 80%);
+                transform: translateX(-5px) translateY(-5px);
+                text-shadow: -5px -5px var(--theme-color-glow);
+            }
+            53%, 56% {
+                clip-path: polygon(10% 0, 90% 0, 100% 100%, 0 100%);
+                transform: translateX(3px) skewX(3deg);
+                text-shadow: 1px -3px var(--theme-color-glow), -1px 3px var(--theme-color-glow);
+            }
+            57%, 60% {
+                clip-path: polygon(0 0, 100% 10%, 90% 100%, 10% 100%);
+                transform: translateX(-3px) skewY(-2deg);
+                text-shadow: -2px 1px var(--theme-color-glow), 2px -1px var(--theme-color-glow);
+            }
+            61%, 100% {
+                clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+                transform: translateX(0);
+                text-shadow: none;
+            }
+        }
+        
+        /* 闪烁效果 */
+        @keyframes flicker {
+            0%, 100% {
+                opacity: 0.9;
+            }
+            6% {
+                opacity: 0.85;
+            }
+            12% {
+                opacity: 0.9;
+            }
+            25% {
+                opacity: 0.7;
+            }
+            27% {
+                opacity: 0.9;
+            }
+            35% {
+                opacity: 0.75;
+            }
+            40% {
+                opacity: 0.9;
+            }
+            50% {
+                opacity: 0.65;
+            }
+            52% {
+                opacity: 0.9;
+            }
+            85% {
+                opacity: 0.8;
+            }
+        }
+
+        /* 破碎效果动画 */
+        @keyframes shatter {
+            0%, 100% {
+                filter: none;
+            }
+            10%, 11% {
+                filter: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='a' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.1' numOctaves='1' result='noise'/%3E%3CfeDisplacementMap in='SourceGraphic' in2='noise' scale='10' xChannelSelector='R' yChannelSelector='G'/%3E%3C/filter%3E%3C/svg%3E#a");
+            }
+            20%, 21% {
+                filter: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='a' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.15' numOctaves='2' result='noise'/%3E%3CfeDisplacementMap in='SourceGraphic' in2='noise' scale='15' xChannelSelector='R' yChannelSelector='G'/%3E%3C/filter%3E%3C/svg%3E#a");
+            }
+            30%, 31% {
+                filter: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='a' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.12' numOctaves='2' result='noise'/%3E%3CfeDisplacementMap in='SourceGraphic' in2='noise' scale='12' xChannelSelector='R' yChannelSelector='G'/%3E%3C/filter%3E%3C/svg%3E#a");
+            }
+            40%, 41% {
+                filter: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='a' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.2' numOctaves='3' result='noise'/%3E%3CfeDisplacementMap in='SourceGraphic' in2='noise' scale='8' xChannelSelector='R' yChannelSelector='G'/%3E%3C/filter%3E%3C/svg%3E#a");
+            }
+            50%, 51% {
+                filter: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='a' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.14' numOctaves='2' seed='2' result='noise'/%3E%3CfeDisplacementMap in='SourceGraphic' in2='noise' scale='14' xChannelSelector='R' yChannelSelector='G'/%3E%3C/filter%3E%3C/svg%3E#a");
+            }
+            60%, 61% {
+                filter: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='a' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.09' numOctaves='2' seed='3' result='noise'/%3E%3CfeDisplacementMap in='SourceGraphic' in2='noise' scale='18' xChannelSelector='R' yChannelSelector='G'/%3E%3C/filter%3E%3C/svg%3E#a");
+            }
+            70%, 71% {
+                filter: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='a' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.15' numOctaves='3' seed='5' result='noise'/%3E%3CfeDisplacementMap in='SourceGraphic' in2='noise' scale='10' xChannelSelector='R' yChannelSelector='G'/%3E%3C/filter%3E%3C/svg%3E#a");
+            }
+            80%, 81% {
+                filter: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='a' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.18' numOctaves='2' seed='1' result='noise'/%3E%3CfeDisplacementMap in='SourceGraphic' in2='noise' scale='20' xChannelSelector='R' yChannelSelector='G'/%3E%3C/filter%3E%3C/svg%3E#a");
+            }
+            90%, 91% {
+                filter: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='a' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.13' numOctaves='3' seed='4' result='noise'/%3E%3CfeDisplacementMap in='SourceGraphic' in2='noise' scale='16' xChannelSelector='R' yChannelSelector='G'/%3E%3C/filter%3E%3C/svg%3E#a");
+            }
+        }
+
+        /* 左侧和右侧文字的特定样式 */
+        .left-text {
+            margin-left: 10vw;
+            transform: perspective(500px) rotateY(5deg);
+        }
+
+        .right-text {
+            margin-right: 10vw;
+            transform: perspective(500px) rotateY(-5deg);
+        }
+    </style>
+</head>
+<body>
+    <div class="code-stream-container">
+        <div class="code-stream-layer" id="codeStreamLayer"></div>
+    </div>
+
+    <!-- 闪电(在文字下方图层) -->
+    <div class="lightning left-lightning">
+        <svg viewBox="0 0 320 512" class="lightning-svg">
+            <path d="M296 160H180.6l42.6-129.8C227.2 15 215.7 0 200 0H56C44 0 33.8 8.9 32.2 20.8l-32 240C-1.7 275.2 9.5 288 24 288h118.7L96.6 482.5c-3.6 15.2 8 29.5 23.3 29.5 8.4 0 16.4-4.4 20.8-12l176-304c9.3-15.9-2.2-36-20.7-36z"/>
+        </svg>
+    </div>
+    
+    <!-- 全息投影风格文字 - 左侧 "神奇" -->
+    <div class="pixel-text-container">
+        <div class="pixel-text left-text">
+            <div class="pixel-char">神</div>
+            <div class="pixel-char">奇</div>
+        </div>
+
+        <!-- 全息投影风格文字 - 右侧 "喵喵" -->
+        <div class="pixel-text right-text">
+            <div class="pixel-char">喵</div>
+            <div class="pixel-char">喵</div>
+        </div>
+    </div>
+    
+    <!-- 右侧闪电 -->
+    <div class="lightning right-lightning">
+        <svg viewBox="0 0 320 512" class="lightning-svg">
+            <path d="M296 160H180.6l42.6-129.8C227.2 15 215.7 0 200 0H56C44 0 33.8 8.9 32.2 20.8l-32 240C-1.7 275.2 9.5 288 24 288h118.7L96.6 482.5c-3.6 15.2 8 29.5 23.3 29.5 8.4 0 16.4-4.4 20.8-12l176-304c9.3-15.9-2.2-36-20.7-36z"/>
+        </svg>
+    </div>
+
+    <script>
+        // 从URL参数中获取初始颜色
+        function getInitialColorFromUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const initialColor = urlParams.get('initialColor');
+            return initialColor ? decodeURIComponent(initialColor) : 'rgba(15, 255, 15, 0.75)';
+        }
+
+        // 配置参数
+        const config = {
+            streamCount: 25,  // 代码流数量
+            minSpeed: 5,      // 最小速度（秒）
+            maxSpeed: 15,     // 最大速度（秒）
+            charsPerStream: 20, // 每个流的字符数
+            streamWidth: 200,  // 代码流宽度（像素）
+            defaultColor: getInitialColorFromUrl() // 默认颜色，从URL参数中获取
+        };
+
+        // 初始颜色
+        const initialColor = config.defaultColor;
+        
+        // 解析RGB值
+        let r = 15, g = 255, b = 15;
+        const rgbMatch = initialColor.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*[\d.]+)?\)/);
+        if (rgbMatch) {
+            r = parseInt(rgbMatch[1]);
+            g = parseInt(rgbMatch[2]);
+            b = parseInt(rgbMatch[3]);
+        }
+        
+        // 立即在文档加载前设置初始颜色
+        document.documentElement.style.setProperty('--theme-color', initialColor);
+        document.documentElement.style.setProperty('--theme-color-glow', `rgba(${r}, ${g}, ${b}, 0.75)`);
+        document.documentElement.style.setProperty('--theme-color-rgb', `${r}, ${g}, ${b}`);
+        document.documentElement.style.setProperty('--theme-color-text', `rgba(${r}, ${g}, ${b}, 0.95)`);
+        document.documentElement.style.setProperty('--theme-color-shadow', `rgba(${r}, ${g}, ${b}, 0.35)`);
+        
+        // 立即创建样式覆盖，确保颜色优先级
+        const styleOverride = document.createElement('style');
+        styleOverride.id = 'color-override';
+        styleOverride.textContent = `
+            .code-stream {
+                color: ${initialColor} !important;
+                text-shadow: 0 0 10px rgba(${r}, ${g}, ${b}, 0.75) !important;
+            }
+            
+            .lightning-svg, .lightning-svg path {
+                fill: rgba(${r}, ${g}, ${b}, 0.75) !important;
+                opacity: 0.7 !important;
+                filter: drop-shadow(0 0 15px rgba(${r}, ${g}, ${b}, 0.5));
+            }
+            
+            .pixel-text, .pixel-char {
+                color: rgba(${r}, ${g}, ${b}, 0.95) !important;
+                text-shadow: 
+                    0 0 5px rgba(${r}, ${g}, ${b}, 0.75) !important,
+                    0 0 10px rgba(${r}, ${g}, ${b}, 0.35) !important,
+                    0 0 15px rgba(${r}, ${g}, ${b}, 0.25) !important;
+                z-index: 25 !important;
+            }
+            
+            .left-lightning, .right-lightning {
+                opacity: 0.65 !important;
+                filter: drop-shadow(0 0 15px rgba(${r}, ${g}, ${b}, 0.75)) !important;
+                z-index: 10 !important;
+            }
+            
+            .pixel-text-container {
+                z-index: 25 !important;
+            }
+            
+            @keyframes hologram {
+                0%, 100% {
+                    filter: 
+                        brightness(1.1) 
+                        drop-shadow(0 0 5px rgba(${r}, ${g}, ${b}, 0.75))
+                        hue-rotate(0deg) !important;
+                }
+                33% {
+                    filter: 
+                        brightness(1.2) 
+                        drop-shadow(0 0 8px rgba(${r}, ${g}, ${b}, 0.75))
+                        hue-rotate(5deg) !important;
+                }
+                66% {
+                    filter: 
+                        brightness(0.9) 
+                        drop-shadow(0 0 3px rgba(${r}, ${g}, ${b}, 0.75))
+                        hue-rotate(-5deg) !important;
+                }
+            }
+        `;
+        document.head.appendChild(styleOverride);
+        
+        // 代码片段数组
+        const codeSnippets = [
+            'function getRandomInt(min, max) {',
+            '  return Math.floor(Math.random() * (max - min + 1)) + min;',
+            '}',
+            'const PI = 3.14159265359;',
+            'let particles = [];',
+            'class Particle {',
+            '  constructor(x, y) {',
+            '    this.x = x;',
+            '    this.y = y;',
+            '    this.vx = Math.random() * 2 - 1;',
+            '    this.vy = Math.random() * 2 - 1;',
+            '  }',
+            '}',
+            'for (let i = 0; i < 100; i++) {',
+            '  particles.push(new Particle(Math.random() * width, Math.random() * height));',
+            '}',
+            'document.getElementById("canvas");',
+            'ctx.fillStyle = "rgba(0, 255, 0, 0.5)";',
+            'ctx.fillRect(0, 0, width, height);',
+            'ctx.clearRect(0, 0, canvas.width, canvas.height);',
+            'const distance = Math.sqrt(dx * dx + dy * dy);',
+            'interface Drawable {',
+            '  draw(): void;',
+            '  update(): void;',
+            '}',
+            'export class Vector2D {',
+            '  x: number;',
+            '  y: number;',
+            '}'
+        ];
+
+        // 页面加载时立即初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('代码流页面已加载，初始化开始');
+            
+            // 初始化代码流
+            createCodeStreams(document.getElementById('codeStreamLayer'));
+            
+            // 监听消息，接收颜色更改指令
+            window.addEventListener('message', function(event) {
+                console.log('代码流页面收到消息:', event.data);
+                
+                if (event.data === 'toggle') {
+                    // 切换代码流显示/隐藏
+                    const layers = document.querySelectorAll('.code-stream-layer');
+                    layers.forEach(layer => {
+                        layer.style.display = layer.style.display === 'none' ? 'block' : 'none';
+                    });
+                    
+                    // 发送确认消息回父页面
+                    if (window.parent) {
+                        window.parent.postMessage({ type: 'toggleConfirmed' }, '*');
+                    }
+                } else if (event.data && event.data.type === 'changeTheme') {
+                    // 切换颜色主题
+                    const newColor = event.data.color;
+                    console.log('代码流页面更改主题颜色为:', newColor);
+                    
+                    // 更新所有颜色
+                    updateAllColors(newColor);
+                    
+                    // 发送确认消息回父页面
+                    if (window.parent) {
+                        window.parent.postMessage({
+                            type: 'themeUpdated',
+                            color: newColor
+                        }, '*');
+                    }
+                }
+            });
+            
+            console.log('代码流初始化完成');
+        });
+        
+        // 创建代码流
+        function createCodeStreams(container) {
+            if (!container) return;
+            
+            console.log(`为容器 ${container.id} 创建代码流`);
+            
+            // 创建指定数量的代码流
+            for (let i = 0; i < config.streamCount; i++) {
+                setTimeout(() => {
+                    createSingleCodeStream(container);
+                }, Math.random() * 5000);
+            }
+        }
+        
+        // 创建单个代码流
+        function createSingleCodeStream(container) {
+            if (!container) return;
+            
+            const stream = document.createElement('div');
+            stream.className = 'code-stream';
+            
+            const snippetIndex = Math.floor(Math.random() * codeSnippets.length);
+            stream.textContent = codeSnippets[snippetIndex];
+            
+            const speed = (config.minSpeed + Math.random() * (config.maxSpeed - config.minSpeed)) / 2; // 速度减半
+            const fontSize = config.charsPerStream;
+            
+            stream.style.left = `${Math.random() * 100}%`;
+            stream.style.fontSize = `${fontSize}px`;
+            stream.style.opacity = `${0.2 + Math.random() * 0.5}`;
+            stream.style.animationDuration = `${32 / speed}s`; // 动画时间加倍
+            
+            container.appendChild(stream);
+            
+            stream.addEventListener('animationend', () => {
+                stream.remove();
+                createSingleCodeStream(container);
+            });
+        }
+        
+        // 更新所有颜色
+        function updateAllColors(newColor) {
+            if (!newColor) return;
+            
+            console.log('更新所有颜色为:', newColor);
+            
+            // 提取RGB值
+            let r, g, b;
+            const rgbMatch = newColor.match(/rgba?\(([^,]+),([^,]+),([^,]+)/);
+            
+            if (rgbMatch) {
+                r = parseInt(rgbMatch[1].trim());
+                g = parseInt(rgbMatch[2].trim());
+                b = parseInt(rgbMatch[3].trim());
+            } else {
+                r = 15; g = 255; b = 15; // 默认值
+            }
+            
+            // 更新全局配置
+            config.defaultColor = newColor;
+            
+            // 更新CSS变量
+            document.documentElement.style.setProperty('--theme-color', newColor);
+            document.documentElement.style.setProperty('--theme-color-glow', `rgba(${r}, ${g}, ${b}, 0.75)`);
+            document.documentElement.style.setProperty('--theme-color-rgb', `${r}, ${g}, ${b}`);
+            document.documentElement.style.setProperty('--theme-color-text', `rgba(${r}, ${g}, ${b}, 0.95)`);
+            document.documentElement.style.setProperty('--theme-color-shadow', `rgba(${r}, ${g}, ${b}, 0.35)`);
+            
+            // 创建一个强制颜色覆盖样式
+            let styleEl = document.getElementById('color-override');
+            if (!styleEl) {
+                styleEl = document.createElement('style');
+                styleEl.id = 'color-override';
+                document.head.appendChild(styleEl);
+            }
+            
+            // 用内联样式强制更新所有元素颜色
+            styleEl.textContent = `
+                .code-stream {
+                    color: ${newColor} !important;
+                    text-shadow: 0 0 10px rgba(${r}, ${g}, ${b}, 0.75) !important;
+                }
+                
+                .lightning-svg, .lightning-svg path {
+                    fill: rgba(${r}, ${g}, ${b}, 0.75) !important;
+                    opacity: 0.7 !important;
+                    filter: drop-shadow(0 0 15px rgba(${r}, ${g}, ${b}, 0.5));
+                }
+                
+                .pixel-text, .pixel-char {
+                    color: rgba(${r}, ${g}, ${b}, 0.95) !important;
+                    text-shadow: 
+                        0 0 5px rgba(${r}, ${g}, ${b}, 0.75) !important,
+                        0 0 10px rgba(${r}, ${g}, ${b}, 0.35) !important,
+                        0 0 15px rgba(${r}, ${g}, ${b}, 0.25) !important;
+                    z-index: 25 !important;
+                }
+                
+                .left-lightning, .right-lightning {
+                    opacity: 0.65 !important;
+                    filter: drop-shadow(0 0 15px rgba(${r}, ${g}, ${b}, 0.75)) !important;
+                    z-index: 10 !important;
+                }
+                
+                .pixel-text-container {
+                    z-index: 25 !important;
+                }
+                
+                @keyframes hologram {
+                    0%, 100% {
+                        filter: 
+                            brightness(1.1) 
+                            drop-shadow(0 0 5px rgba(${r}, ${g}, ${b}, 0.75))
+                            hue-rotate(0deg) !important;
+                    }
+                    33% {
+                        filter: 
+                            brightness(1.2) 
+                            drop-shadow(0 0 8px rgba(${r}, ${g}, ${b}, 0.75))
+                            hue-rotate(5deg) !important;
+                    }
+                    66% {
+                        filter: 
+                            brightness(0.9) 
+                            drop-shadow(0 0 3px rgba(${r}, ${g}, ${b}, 0.75))
+                            hue-rotate(-5deg) !important;
+                    }
+                }
+                
+                @keyframes glitch {
+                    10% {
+                        text-shadow: -3px 0 rgba(${r}, ${g}, ${b}, 0.75) !important;
+                    }
+                    20% {
+                        text-shadow: 3px 0 rgba(${r}, ${g}, ${b}, 0.75) !important;
+                    }
+                    30% {
+                        text-shadow: -2px 0 rgba(${r}, ${g}, ${b}, 0.75), 2px 0 rgba(${r}, ${g}, ${b}, 0.75) !important;
+                    }
+                    50% {
+                        text-shadow: 2px 0 rgba(${r}, ${g}, ${b}, 0.75), -2px 0 rgba(${r}, ${g}, ${b}, 0.75) !important;
+                    }
+                    70% {
+                        text-shadow: 3px 3px rgba(${r}, ${g}, ${b}, 0.75) !important;
+                    }
+                    80% {
+                        text-shadow: -3px -3px rgba(${r}, ${g}, ${b}, 0.75) !important;
+                    }
+                }
+                
+                @keyframes shatter {
+                    20%, 21%, 30%, 31%, 60%, 61% {
+                        filter: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='a' x='0' y='0' width='100%25' height='100%25'%3E%3CfeColorMatrix type='matrix' values='1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 ${Math.random() * 0.5 + 0.5} 0'/%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.05' numOctaves='1' result='noise'/%3E%3CfeDisplacementMap in='SourceGraphic' in2='noise' scale='8' xChannelSelector='R' yChannelSelector='G'/%3E%3C/filter%3E%3C/svg%3E#a");
+                    }
+                }
+            `;
+            
+            // 直接更新SVG元素
+            const allSvgs = document.querySelectorAll('svg, svg path');
+            allSvgs.forEach(svg => {
+                svg.style.fill = `rgba(${r}, ${g}, ${b}, 0.75)`;
+                svg.setAttribute('fill', `rgba(${r}, ${g}, ${b}, 0.75)`);
+            });
+            
+            // 闪电元素的更新
+            const lightnings = document.querySelectorAll('.lightning');
+            lightnings.forEach(lightning => {
+                lightning.style.filter = `drop-shadow(0 0 15px rgba(${r}, ${g}, ${b}, 0.75))`;
+                lightning.style.opacity = '1';
+            });
+            
+            // 直接更新代码流
+            const codeStreams = document.querySelectorAll('.code-stream');
+            codeStreams.forEach(stream => {
+                stream.style.color = newColor;
+                stream.style.textShadow = `0 0 10px rgba(${r}, ${g}, ${b}, 0.75)`;
+            });
+            
+            // 更新文字
+            const pixelTexts = document.querySelectorAll('.pixel-text, .pixel-char');
+            pixelTexts.forEach(text => {
+                text.style.color = `rgba(${r}, ${g}, ${b}, 0.95)`;
+                text.style.textShadow = `
+                    0 0 5px rgba(${r}, ${g}, ${b}, 0.75),
+                    0 0 10px rgba(${r}, ${g}, ${b}, 0.35)`;
+            });
+            
+            console.log('颜色更新完成');
+        }
+    </script>
+</body>
+</html>

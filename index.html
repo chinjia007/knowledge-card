@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>知识卡片制作工具</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Dancing+Script:wght@400;700&family=Lobster&family=Montserrat:wght@400;500;600&family=Varela+Round&family=Roboto+Mono&display=swap">
+    <!-- 预加载中文字体 -->
+    <style>
+        @font-face {
+            font-family: 'FangSong';
+            src: local('FangSong'), local('仿宋');
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'LiSu';
+            src: local('LiSu'), local('隶书');
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'HuaKangYuanTi';
+            src: local('HuaKangYuanTi'), local('华康圆体');
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'Microsoft YaHei';
+            src: local('Microsoft YaHei'), local('微软雅黑');
+            font-display: swap;
+        }
+    </style>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <!-- 添加本地备份，确保html2canvas可用 -->
+    <script>
+        // 检查html2canvas是否成功加载，如果没有则加载本地版本
+        window.addEventListener('DOMContentLoaded', function() {
+            if (typeof html2canvas === 'undefined') {
+                console.log('加载CDN html2canvas失败，尝试加载本地版本');
+                var script = document.createElement('script');
+                script.src = 'html2canvas.min.js'; // 本地版本路径
+                script.onload = function() {
+                    console.log('本地html2canvas加载成功');
+                };
+                script.onerror = function() {
+                    console.error('本地html2canvas加载失败');
+                    alert('无法加载图片导出功能所需的库，请检查网络连接或联系管理员');
+                };
+                document.head.appendChild(script);
+            }
+        });
+    </script>
+</head>
+<body>
+    <div class="app-container">
+        <div class="preview-container">
+            <div id="card-preview" class="card">
+                <div class="card-header">
+                    <div class="card-icon"><i class="fas fa-rocket"></i></div>
+                    <h2 id="card-title">Python知识点卡片</h2>
+                    <div class="card-decoration"></div>
+                </div>
+                <div id="card-body" class="card-body knowledge-mode">
+                    <!-- 内容将通过JavaScript动态生成 -->
+                </div>
+            </div>
+        </div>
+        
+        <div class="toolbar">
+            <h2>卡片工具箱</h2>
+            
+            <!-- 1. 卡片类型 -->
+            <div class="mode-selection tool-section">
+                <h3>卡片类型</h3>
+                <div class="mode-buttons">
+                    <button id="knowledge-mode" class="mode-btn active">知识点卡片</button>
+                    <button id="quiz-mode" class="mode-btn">测试题卡片</button>
+                </div>
+            </div>
+            
+            <!-- 2. 增删知识块 -->
+            <div class="block-controls tool-section">
+                <button id="add-block" class="action-btn">
+                    <i class="fas fa-plus"></i> 添加知识块
+                </button>
+                <button id="remove-block" class="action-btn danger">
+                    <i class="fas fa-minus"></i> 删除知识块
+                </button>
+            </div>
+            
+            <!-- 3. 编辑内容 -->
+            <div class="input-area tool-section">
+                <h3>编辑内容 
+                    <span class="format-help-trigger">
+                        <i class="fas fa-info-circle"></i>
+                    </span>
+                </h3>
+                <div class="format-help" id="format-help">
+                    <p><strong>知识点卡片格式：</strong></p>
+                    <pre>标题: 卡片标题
+模块1标题: 模块名称
+知识点内容：内容描述
+思考问题：问题内容
+小贴士：提示内容</pre>
+                    
+                    <p><strong>测试题卡片格式：</strong></p>
+                    <pre>标题: 卡片标题
+题目1: 问题内容
+选项A: 选项内容
+选项B: 选项内容
+选项C: 选项内容
+选项D: 选项内容</pre>
+                </div>
+                <div id="formatted-input">
+                    <textarea id="card-content" placeholder="在此输入卡片内容，将根据当前选择的模式进行格式化"></textarea>
+                </div>
+            </div>
+            
+            <!-- 4. 排版样式 -->
+            <div class="tool-section">
+                <h3>排版样式</h3>
+                <div class="layout-grid">
+                    <div class="layout-option" data-layout="1">
+                        <i class="fas fa-grip-lines"></i>
+                    </div>
+                    <div class="layout-option" data-layout="2">
+                        <i class="fas fa-list"></i>
+                    </div>
+                    <div class="layout-option" data-layout="3">
+                        <i class="fas fa-th-large"></i>
+                    </div>
+                    <div class="layout-option" data-layout="4">
+                        <i class="fas fa-columns"></i>
+                    </div>
+                    <div class="layout-option" data-layout="5">
+                        <i class="fas fa-stream"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 5. 卡片字体 -->
+            <div class="tool-section">
+                <h3>卡片字体</h3>
+                <div class="font-selection">
+                    <select id="font-selector" class="font-selector">
+                        <option value="font-default" class="font-default">默认字体</option>
+                        <option value="font-msyh" class="font-msyh">微软雅黑</option>
+                        <option value="font-fangsong" class="font-fangsong">仿宋</option>
+                        <option value="font-huakang" class="font-huakang">华康圆体</option>
+                        <option value="font-lishu" class="font-lishu">隶书</option>
+                        <option value="font-sans" class="font-sans">无衬线字体</option>
+                        <option value="font-serif" class="font-serif">衬线字体</option>
+                        <option value="font-mono" class="font-mono">等宽字体</option>
+                        <option value="font-rounded" class="font-rounded">圆润字体</option>
+                        <option value="font-elegant" class="font-elegant">优雅字体</option>
+                        <option value="font-handwriting" class="font-handwriting">手写体</option>
+                        <option value="font-creative" class="font-creative">创意字体</option>
+                        <option value="font-modern" class="font-modern">现代字体</option>
+                        <option value="font-tech" class="font-tech">科技字体</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- 6. 卡片颜色 -->
+            <div class="tool-section">
+                <h3>卡片颜色</h3>
+                <div class="color-grid">
+                    <div class="color-option theme-softpink selected" data-color="theme-softpink"></div>
+                    <div class="color-option theme-lilac" data-color="theme-lilac"></div>
+                    <div class="color-option theme-mint" data-color="theme-mint"></div>
+                    <div class="color-option theme-peach" data-color="theme-peach"></div>
+                    <div class="color-option theme-skyblue" data-color="theme-skyblue"></div>
+                    <div class="color-option theme-marigold" data-color="theme-marigold"></div>
+                    <div class="color-option theme-babyblue" data-color="theme-babyblue"></div>
+                    <div class="color-option theme-lavender" data-color="theme-lavender"></div>
+                    <div class="color-option theme-sage" data-color="theme-sage"></div>
+                    <div class="color-option theme-coral" data-color="theme-coral"></div>
+                    <div class="color-option theme-turquoise" data-color="theme-turquoise"></div>
+                    <div class="color-option theme-blush" data-color="theme-blush"></div>
+                    <div class="color-option theme-butter" data-color="theme-butter"></div>
+                    <div class="color-option theme-periwinkle" data-color="theme-periwinkle"></div>
+                    <div class="color-option theme-pistachio" data-color="theme-pistachio"></div>
+                    <div class="color-option theme-bubblegum" data-color="theme-bubblegum"></div>
+                    <div class="color-option theme-cloudy" data-color="theme-cloudy"></div>
+                    <div class="color-option theme-banana" data-color="theme-banana"></div>
+                    <div class="color-option theme-seafoam" data-color="theme-seafoam"></div>
+                    <div class="color-option theme-strawberry" data-color="theme-strawberry"></div>
+                    <div class="color-option theme-slate" data-color="theme-slate"></div>
+                    <div class="color-option theme-sunflower" data-color="theme-sunflower"></div>
+                    <div class="color-option theme-moss" data-color="theme-moss"></div>
+                    <div class="color-option theme-cornflower" data-color="theme-cornflower"></div>
+                    <div class="color-option theme-grad-yellow-orange" data-color="theme-grad-yellow-orange"></div>
+                    <div class="color-option theme-grad-pink" data-color="theme-grad-pink"></div>
+                    <div class="color-option theme-grad-cyan-blue" data-color="theme-grad-cyan-blue"></div>
+                    <div class="color-option theme-grad-purple" data-color="theme-grad-purple"></div>
+                    <div class="color-option theme-grad-purple-pink" data-color="theme-grad-purple-pink"></div>
+                    <div class="color-option theme-grad-green" data-color="theme-grad-green"></div>
+                    <div class="color-option theme-grad-pink-purple" data-color="theme-grad-pink-purple"></div>
+                    <div class="color-option theme-grad-blue-purple" data-color="theme-grad-blue-purple"></div>
+                    <div class="color-option theme-grad-teal-green" data-color="theme-grad-teal-green"></div>
+                    <div class="color-option theme-grad-blue" data-color="theme-grad-blue"></div>
+                    <div class="color-option theme-grad-yellow" data-color="theme-grad-yellow"></div>
+                    <div class="color-option theme-grad-light-blue" data-color="theme-grad-light-blue"></div>
+                    <div class="color-option theme-grad-orange-red" data-color="theme-grad-orange-red"></div>
+                    <div class="color-option theme-grad-purple-light" data-color="theme-grad-purple-light"></div>
+                    <div class="color-option theme-grad-teal" data-color="theme-grad-teal"></div>
+                    <div class="color-option theme-grad-peach" data-color="theme-grad-peach"></div>
+                    <div class="color-option theme-grad-light-green" data-color="theme-grad-light-green"></div>
+                    <div class="color-option theme-grad-lavender" data-color="theme-grad-lavender"></div>
+                    <div class="color-option theme-grad-pink-red" data-color="theme-grad-pink-red"></div>
+                    <div class="color-option theme-grad-orange" data-color="theme-grad-orange"></div>
+                </div>
+            </div>
+            
+            <button id="export-btn" class="export-btn">
+                <i class="fas fa-file-export"></i> 导出为PNG
+            </button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="code-stream-integration.js"></script>
+    <script>
+    function debugHtml2Canvas() {
+        console.log('调试开始...');
+        console.log('html2canvas库状态:', typeof html2canvas !== 'undefined' ? '已加载' : '未加载');
+        
+        const card = document.querySelector('.card');
+        if (!card) {
+            console.error('未找到卡片元素');
+            return;
+        }
+        
+        try {
+            // 尝试创建一个简单的测试canvas
+            const testCanvas = document.createElement('canvas');
+            const ctx = testCanvas.getContext('2d');
+            ctx.fillStyle = 'green';
+            ctx.fillRect(0, 0, 100, 100);
+            
+            console.log('测试canvas创建成功，尝试转换为dataURL...');
+            try {
+                const dataUrl = testCanvas.toDataURL();
+                console.log('测试canvas转换成功:', dataUrl.substring(0, 50) + '...');
+            } catch (e) {
+                console.error('测试canvas转换失败:', e);
+            }
+            
+            console.log('现在尝试html2canvas...');
+            html2canvas(card, {
+                scale: 2,
+                useCORS: true,
+                backgroundColor: null,
+                logging: true
+            }).then(canvas => {
+                console.log('html2canvas渲染成功，尝试转换为dataURL...');
+                try {
+                    const dataUrl = canvas.toDataURL();
+                    console.log('转换成功:', dataUrl.substring(0, 50) + '...');
+                    
+                    // 创建一个简单的预览元素
+                    const preview = document.createElement('div');
+                    preview.style.position = 'fixed';
+                    preview.style.top = '20px';
+                    preview.style.left = '20px';
+                    preview.style.backgroundColor = 'white';
+                    preview.style.padding = '10px';
+                    preview.style.border = '1px solid black';
+                    preview.style.zIndex = '10000';
+                    
+                    const img = document.createElement('img');
+                    img.src = dataUrl;
+                    img.style.maxWidth = '300px';
+                    
+                    const closeBtn = document.createElement('button');
+                    closeBtn.innerText = '关闭';
+                    closeBtn.onclick = function() { document.body.removeChild(preview); };
+                    
+                    preview.appendChild(img);
+                    preview.appendChild(document.createElement('br'));
+                    preview.appendChild(closeBtn);
+                    
+                    document.body.appendChild(preview);
+                } catch (e) {
+                    console.error('转换失败:', e);
+                }
+            }).catch(err => {
+                console.error('html2canvas渲染失败:', err);
+            });
+        } catch (err) {
+            console.error('整体测试过程出错:', err);
+        }
+    }
+
+    // 添加格式说明的悬停交互
+    document.addEventListener('DOMContentLoaded', function() {
+        const formatHelpTrigger = document.querySelector('.format-help-trigger');
+        const formatHelp = document.getElementById('format-help');
+
+        if (formatHelpTrigger && formatHelp) {
+            formatHelpTrigger.addEventListener('mouseenter', function() {
+                formatHelp.style.display = 'block';
+            });
+            
+            formatHelpTrigger.addEventListener('mouseleave', function() {
+                formatHelp.style.display = 'none';
+            });
+            
+            formatHelp.addEventListener('mouseenter', function() {
+                formatHelp.style.display = 'block';
+            });
+            
+            formatHelp.addEventListener('mouseleave', function() {
+                formatHelp.style.display = 'none';
+            });
+        }
+    });
+    </script>
+</body>
+</html> 

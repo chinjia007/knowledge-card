@@ -1,0 +1,2170 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Microsoft YaHei', Arial, sans-serif;
+}
+
+:root {
+    --primary-color: #FF8BA7; /* Softer Pink */
+    --danger-color: #FF6B98; /* Soft Pink */
+    --success-color: #76E7B8; /* Soft Green */
+    --warning-color: #FFD166; /* Soft Yellow */
+    --info-color: #85A7FF; /* Soft Blue */
+    --neutral-color: #C4AEFF; /* Soft Purple */
+    --border-radius: 8px;
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+body {
+    background-color: #f5f7fb;
+    padding: 16px;
+    color: #333;
+    min-height: 100vh;
+}
+
+.app-tip {
+    max-width: 1100px;
+    margin: 0 auto 10px;
+    padding: 8px 12px;
+    background-color: #E6F4FF;
+    border-left: 3px solid #4E6AFF;
+    border-radius: var(--border-radius);
+    font-size: 13px;
+    color: #0066FF;
+}
+
+.app-container {
+    display: flex;
+    flex-direction: row-reverse;
+    max-width: 1100px;
+    margin: 0 auto;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+}
+
+/* 工具面板样式 */
+.toolbar {
+    width: 320px;
+    padding: 16px;
+    background-color: #f9fafb;
+    border-left: 1px solid #e5e7eb;
+    overflow-y: auto;
+    max-height: calc(100vh - 40px);
+}
+
+.toolbar h2 {
+    margin-bottom: 16px;
+    color: #111827;
+    text-align: center;
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+.tool-section {
+    margin-bottom: 18px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.tool-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.toolbar h3 {
+    margin-bottom: 10px;
+    color: #4b5563;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+/* 模式选择样式 */
+.mode-buttons {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.mode-btn {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #e5e7eb;
+    border-radius: var(--border-radius);
+    background-color: white;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.mode-btn:hover {
+    background-color: #F9E6FF;
+    border-color: #9D7AFF;
+}
+
+.mode-btn.active {
+    background-color: #9D7AFF;
+    border-color: #9D7AFF;
+    color: white;
+}
+
+/* 配色方案样式 */
+.color-grid {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 6px;
+    margin-bottom: 15px;
+}
+
+.color-option {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    margin: 0 auto;
+}
+
+.color-option:hover {
+    transform: scale(1.2);
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+    z-index: 1;
+}
+
+.color-option.selected {
+    box-shadow: 0 0 0 2px white, 0 0 0 4px var(--primary-color);
+    transform: scale(1.1);
+}
+
+/* 为颜色选项应用对应的背景渐变 */
+.color-option.theme-cherry {
+    background-color: #D41E25;
+}
+
+.color-option.theme-butter {
+    background-color: #FFE066;
+}
+
+.color-option.theme-indigo {
+    background-color: #8A7FBF;
+}
+
+.color-option.theme-dill {
+    background-color: #6B8866;
+}
+
+.color-option.theme-oat {
+    background-color: #E5D5C0;
+}
+
+.color-option.theme-mocha {
+    background-color: #B78A74;
+}
+
+/* 新增20套高饱和度流行色彩方案 */
+.color-option.theme-hotpink {
+    background-color: #FF1A7A;
+}
+
+.color-option.theme-coral {
+    background-color: #FF7043;
+}
+
+.color-option.theme-neonblue {
+    background-color: #1A85FF;
+}
+
+.color-option.theme-electricpurple {
+    background-color: #9627E6;
+}
+
+.color-option.theme-limegreen {
+    background-color: #32D732;
+}
+
+.color-option.theme-magenta {
+    background-color: #FF00FF;
+}
+
+.color-option.theme-goldenrod {
+    background-color: #F7B71D;
+}
+
+.color-option.theme-turquoise {
+    background-color: #20E5D1;
+}
+
+.color-option.theme-crimson {
+    background-color: #F01A36;
+}
+
+.color-option.theme-royalblue {
+    background-color: #375FE8;
+}
+
+.color-option.theme-aqua {
+    background-color: #00FFFF;
+}
+
+.color-option.theme-violet {
+    background-color: #EE38EE;
+}
+
+.color-option.theme-neonorange {
+    background-color: #FF8000;
+}
+
+.color-option.theme-bubblegum {
+    background-color: #FF60FF;
+}
+
+.color-option.theme-tropicalgreen {
+    background-color: #00FF9D;
+}
+
+.color-option.theme-fuschia {
+    background-color: #FF0080;
+}
+
+.color-option.theme-oceanblue {
+    background-color: #0066FF;
+}
+
+.color-option.theme-neongreen {
+    background-color: #33FF00;
+}
+
+.color-option.theme-sunsetorange {
+    background-color: #FF3300;
+}
+
+.color-option.theme-berrypurple {
+    background-color: #9932CC;
+}
+
+/* 新的儿童友好色彩主题 - 2025年流行色 */
+.color-option.theme-softpink {
+    background-color: #FF7A9D;
+}
+
+.color-option.theme-lilac {
+    background-color: #9F7EDE;
+}
+
+.color-option.theme-mint {
+    background-color: #66ECAE;
+}
+
+.color-option.theme-peach {
+    background-color: #FFB280;
+}
+
+.color-option.theme-skyblue {
+    background-color: #47B8FF;
+}
+
+.color-option.theme-marigold {
+    background-color: #FFCC00;
+}
+
+.color-option.theme-babyblue {
+    background-color: #66E3FF;
+}
+
+.color-option.theme-lavender {
+    background-color: #D47BFF;
+}
+
+.color-option.theme-sage {
+    background-color: #A6CF87;
+}
+
+.color-option.theme-coral {
+    background-color: #FF7A66;
+}
+
+.color-option.theme-turquoise {
+    background-color: #40DBD0;
+}
+
+.color-option.theme-blush {
+    background-color: #FF99BB;
+}
+
+.color-option.theme-butter {
+    background-color: #FFCC33;
+}
+
+.color-option.theme-periwinkle {
+    background-color: #809CEE;
+}
+
+.color-option.theme-pistachio {
+    background-color: #B0E57C;
+}
+
+.color-option.theme-bubblegum {
+    background-color: #FF8AD5;
+}
+
+.color-option.theme-cloudy {
+    background-color: #B3CFEA;
+}
+
+.color-option.theme-banana {
+    background-color: #FFEE66;
+}
+
+.color-option.theme-seafoam {
+    background-color: #75F0CB;
+}
+
+.color-option.theme-strawberry {
+    background-color: #FF5573;
+}
+
+.color-option.theme-slate {
+    background-color: #80A3D4;
+}
+
+.color-option.theme-sunflower {
+    background-color: #FFDD33;
+}
+
+.color-option.theme-moss {
+    background-color: #8AD653;
+}
+
+.color-option.theme-cornflower {
+    background-color: #4F7AF0;
+}
+
+/* 新增图片中的渐变色卡片 */
+.color-option.theme-grad-yellow-orange {
+    background-image: linear-gradient(135deg, #FFEB3B, #FF9800);
+}
+
+.color-option.theme-grad-pink {
+    background-image: linear-gradient(135deg, #FF4081, #F06292);
+}
+
+.color-option.theme-grad-cyan-blue {
+    background-image: linear-gradient(135deg, #00BCD4, #2196F3);
+}
+
+.color-option.theme-grad-purple {
+    background-image: linear-gradient(135deg, #673AB7, #9C27B0);
+}
+
+.color-option.theme-grad-purple-pink {
+    background-image: linear-gradient(135deg, #9C27B0, #E91E63);
+}
+
+.color-option.theme-grad-green {
+    background-image: linear-gradient(135deg, #4CAF50, #8BC34A);
+}
+
+.color-option.theme-grad-pink-purple {
+    background-image: linear-gradient(135deg, #E91E63, #9C27B0);
+}
+
+.color-option.theme-grad-blue-purple {
+    background-image: linear-gradient(135deg, #3F51B5, #673AB7);
+}
+
+.color-option.theme-grad-teal-green {
+    background-image: linear-gradient(135deg, #009688, #4CAF50);
+}
+
+.color-option.theme-grad-blue {
+    background-image: linear-gradient(135deg, #2196F3, #3F51B5);
+}
+
+.color-option.theme-grad-yellow {
+    background-image: linear-gradient(135deg, #FFEB3B, #FFC107);
+}
+
+.color-option.theme-grad-light-blue {
+    background-image: linear-gradient(135deg, #03A9F4, #29B6F6);
+}
+
+.color-option.theme-grad-orange-red {
+    background-image: linear-gradient(135deg, #FF9800, #FF5722);
+}
+
+.color-option.theme-grad-purple-light {
+    background-image: linear-gradient(135deg, #9575CD, #B39DDB);
+}
+
+.color-option.theme-grad-teal {
+    background-image: linear-gradient(135deg, #26A69A, #80CBC4);
+}
+
+.color-option.theme-grad-peach {
+    background-image: linear-gradient(135deg, #FFAB91, #FFCCBC);
+}
+
+.color-option.theme-grad-light-green {
+    background-image: linear-gradient(135deg, #8BC34A, #AED581);
+}
+
+.color-option.theme-grad-lavender {
+    background-image: linear-gradient(135deg, #9575CD, #D1C4E9);
+}
+
+.color-option.theme-grad-pink-red {
+    background-image: linear-gradient(135deg, #EC407A, #EF5350);
+}
+
+.color-option.theme-grad-orange {
+    background-image: linear-gradient(135deg, #FF9800, #FFB74D);
+}
+
+/* 渐变配色主题 */
+.theme-cherry {
+    --theme-primary: linear-gradient(135deg, #8E1920, #B9232A);
+    --theme-text: white;
+    --theme-secondary: #F4D3D5;
+    --theme-accent: #B9232A;
+}
+
+.theme-butter {
+    --theme-primary: linear-gradient(135deg, #E6C968, #F2D492);
+    --theme-text: #333333;
+    --theme-secondary: #FDF8E8;
+    --theme-accent: #DEB144;
+}
+
+.theme-indigo {
+    --theme-primary: linear-gradient(135deg, #5D5891, #7A72A4);
+    --theme-text: white;
+    --theme-secondary: #E8E5F2;
+    --theme-accent: #7A72A4;
+}
+
+.theme-dill {
+    --theme-primary: linear-gradient(135deg, #42513B, #62725D);
+    --theme-text: white;
+    --theme-secondary: #E3E7E1;
+    --theme-accent: #62725D;
+}
+
+.theme-oat {
+    --theme-primary: linear-gradient(135deg, #B6AC9D, #D3C7B8);
+    --theme-text: #333333;
+    --theme-secondary: #F5F2EE;
+    --theme-accent: #B6AC9D;
+}
+
+.theme-mocha {
+    --theme-primary: linear-gradient(135deg, #7D5F4E, #9E7967);
+    --theme-text: white;
+    --theme-secondary: #EFE8E3;
+    --theme-accent: #9E7967;
+}
+
+/* 新增20套主题变量配置 */
+.card[data-theme="theme-hotpink"] {
+    --theme-primary: #FF427A;
+    --theme-secondary: #FF85A1;
+    --theme-light: #FFECF2;
+    --theme-dark: #CC2550;
+    --theme-accent: #FF5A8B;
+}
+
+.card[data-theme="theme-coral"] {
+    --theme-primary: #FF7F50;
+    --theme-secondary: #FFA07A;
+    --theme-light: #FFEFE9;
+    --theme-dark: #E56038;
+    --theme-accent: #FFB299;
+}
+
+.card[data-theme="theme-neonblue"] {
+    --theme-primary: #1E90FF;
+    --theme-secondary: #00BFFF;
+    --theme-light: #E6F4FF;
+    --theme-dark: #0066CC;
+    --theme-accent: #4DA6FF;
+}
+
+.card[data-theme="theme-electricpurple"] {
+    --theme-primary: #8A2BE2;
+    --theme-secondary: #9932CC;
+    --theme-light: #F2E6FF;
+    --theme-dark: #6A1CB3;
+    --theme-accent: #AB5AFF;
+}
+
+.card[data-theme="theme-limegreen"] {
+    --theme-primary: #32CD32;
+    --theme-secondary: #7CFC00;
+    --theme-light: #EAFFD6;
+    --theme-dark: #228B22;
+    --theme-accent: #66FF33;
+}
+
+.card[data-theme="theme-magenta"] {
+    --theme-primary: #FF00FF;
+    --theme-secondary: #FF69B4;
+    --theme-light: #FFE6FF;
+    --theme-dark: #CC00CC;
+    --theme-accent: #FF4DFF;
+}
+
+.card[data-theme="theme-goldenrod"] {
+    --theme-primary: #DAA520;
+    --theme-secondary: #FFD700;
+    --theme-light: #FFF8D6;
+    --theme-dark: #B8860B;
+    --theme-accent: #FFE44D;
+}
+
+.card[data-theme="theme-turquoise"] {
+    --theme-primary: #40E0D0;
+    --theme-secondary: #5F9EA0;
+    --theme-light: #E0FFFA;
+    --theme-dark: #20B2AA;
+    --theme-accent: #66FFE0;
+}
+
+.card[data-theme="theme-crimson"] {
+    --theme-primary: #DC143C;
+    --theme-secondary: #FF4500;
+    --theme-light: #FFE6EA;
+    --theme-dark: #B01030;
+    --theme-accent: #FF3355;
+}
+
+.card[data-theme="theme-royalblue"] {
+    --theme-primary: #4169E1;
+    --theme-secondary: #0000CD;
+    --theme-light: #E6ECFF;
+    --theme-dark: #27408B;
+    --theme-accent: #4D79FF;
+}
+
+.card[data-theme="theme-aqua"] {
+    --theme-primary: #00FFFF;
+    --theme-secondary: #00CED1;
+    --theme-light: #E0FFFF;
+    --theme-dark: #00CCCC;
+    --theme-accent: #4DFFFF;
+}
+
+.card[data-theme="theme-violet"] {
+    --theme-primary: #EE82EE;
+    --theme-secondary: #9370DB;
+    --theme-light: #F9E6FF;
+    --theme-dark: #9932CC;
+    --theme-accent: #D19EFF;
+}
+
+.card[data-theme="theme-neonorange"] {
+    --theme-primary: #FF8C00;
+    --theme-secondary: #FFA500;
+    --theme-light: #FFF0E0;
+    --theme-dark: #D2691E;
+    --theme-accent: #FFAA33;
+}
+
+.card[data-theme="theme-bubblegum"] {
+    --theme-primary: #FF77FF;
+    --theme-secondary: #FFD1DC;
+    --theme-light: #FFECF5;
+    --theme-dark: #FF3399;
+    --theme-accent: #FF99FF;
+}
+
+.card[data-theme="theme-tropicalgreen"] {
+    --theme-primary: #00FA9A;
+    --theme-secondary: #3CB371;
+    --theme-light: #E0FFF2;
+    --theme-dark: #2E8B57;
+    --theme-accent: #00FF7F;
+}
+
+.card[data-theme="theme-fuschia"] {
+    --theme-primary: #FF1493;
+    --theme-secondary: #C71585;
+    --theme-light: #FFE3F0;
+    --theme-dark: #B03060;
+    --theme-accent: #FF5CAA;
+}
+
+.card[data-theme="theme-oceanblue"] {
+    --theme-primary: #0066FF;
+    --theme-secondary: #00CCFF;
+    --theme-light: #E6F5FF;
+    --theme-dark: #0052CC;
+    --theme-accent: #4D94FF;
+}
+
+.card[data-theme="theme-neongreen"] {
+    --theme-primary: #39FF14;
+    --theme-secondary: #00FF00;
+    --theme-light: #EAFFEA;
+    --theme-dark: #00CC00;
+    --theme-accent: #66FF33;
+}
+
+.card[data-theme="theme-sunsetorange"] {
+    --theme-primary: #FF4500;
+    --theme-secondary: #FF8C00;
+    --theme-light: #FFEDE0;
+    --theme-dark: #D23600;
+    --theme-accent: #FF6A33;
+}
+
+.card[data-theme="theme-berrypurple"] {
+    --theme-primary: #8A2BE2;
+    --theme-secondary: #BA55D3;
+    --theme-light: #F5E6FF;
+    --theme-dark: #6A0DAD;
+    --theme-accent: #9F3FFF;
+}
+
+/* 根据主题设置卡片元素样式 */
+.card-icon {
+    background: var(--theme-primary);
+    color: var(--theme-text);
+}
+
+.card-decoration {
+    background: var(--theme-primary);
+}
+
+.card[data-theme] .knowledge-mode .module {
+    border-left-color: var(--theme-primary);
+    background-color: white;
+}
+
+.card[data-theme] .knowledge-mode .thinking {
+    border-left-color: var(--theme-accent);
+}
+
+.card[data-theme] .knowledge-mode .note {
+    background-color: var(--theme-light);
+    color: var(--theme-dark);
+}
+
+.card[data-theme] .knowledge-mode .note i {
+    color: var(--theme-accent);
+}
+
+.card[data-theme] .mode-btn.active {
+    background-color: #9D7AFF;
+    border-color: #9D7AFF;
+}
+
+.card[data-theme="theme-dark"] .knowledge-mode h3,
+.card[data-theme="theme-dark"] .card-header h2 {
+    color: #f3f4f6;
+}
+
+.card[data-theme="theme-dark"] .knowledge-mode .module {
+    background-color: rgba(75, 85, 99, 0.3);
+}
+
+.card[data-theme="theme-dark"] .knowledge-mode p {
+    color: #d1d5db;
+}
+
+.card[data-theme="theme-dark"] .knowledge-mode .thinking {
+    color: #e5e7eb;
+}
+
+/* RGB值配置 */
+.card[data-theme="theme-hotpink"] { --theme-light-rgb: 255, 236, 242; }
+.card[data-theme="theme-coral"] { --theme-light-rgb: 255, 239, 233; }
+.card[data-theme="theme-neonblue"] { --theme-light-rgb: 230, 244, 255; }
+.card[data-theme="theme-electricpurple"] { --theme-light-rgb: 242, 230, 255; }
+.card[data-theme="theme-limegreen"] { --theme-light-rgb: 234, 255, 214; }
+.card[data-theme="theme-magenta"] { --theme-light-rgb: 255, 230, 255; }
+.card[data-theme="theme-goldenrod"] { --theme-light-rgb: 255, 248, 214; }
+.card[data-theme="theme-turquoise"] { --theme-light-rgb: 224, 255, 250; }
+.card[data-theme="theme-crimson"] { --theme-light-rgb: 255, 230, 234; }
+.card[data-theme="theme-royalblue"] { --theme-light-rgb: 230, 236, 255; }
+.card[data-theme="theme-aqua"] { --theme-light-rgb: 224, 255, 255; }
+.card[data-theme="theme-violet"] { --theme-light-rgb: 249, 230, 255; }
+.card[data-theme="theme-neonorange"] { --theme-light-rgb: 255, 240, 224; }
+.card[data-theme="theme-bubblegum"] { --theme-light-rgb: 255, 236, 245; }
+.card[data-theme="theme-tropicalgreen"] { --theme-light-rgb: 224, 255, 242; }
+.card[data-theme="theme-fuschia"] { --theme-light-rgb: 255, 227, 240; }
+.card[data-theme="theme-oceanblue"] { --theme-light-rgb: 230, 245, 255; }
+.card[data-theme="theme-neongreen"] { --theme-light-rgb: 234, 255, 234; }
+.card[data-theme="theme-sunsetorange"] { --theme-light-rgb: 255, 237, 224; }
+.card[data-theme="theme-berrypurple"] { --theme-light-rgb: 245, 230, 255; }
+
+/* 排版样式和其他网格 */
+.layout-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+}
+
+.layout-option, .decoration-option, .style-option {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+    border: 1px solid #e5e7eb;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: all 0.2s;
+    color: #6b7280;
+    font-size: 1rem;
+}
+
+.layout-option:hover, .decoration-option:hover, .style-option:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+}
+
+.layout-option.selected, .decoration-option.selected, .style-option.selected {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+/* 按钮样式 */
+.action-btn {
+    display: block;
+    width: 100%;
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    border: none;
+    border-radius: var(--border-radius);
+    background-color: #f3f4f6;
+    color: #111827;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.action-btn:hover {
+    background-color: #9D7AFF;
+    color: white;
+}
+
+.action-btn.danger {
+    border: 1px solid var(--danger-color);
+    color: var(--danger-color);
+}
+
+.action-btn.danger:hover {
+    background-color: var(--danger-color);
+    color: white;
+}
+
+/* 导出按钮样式 */
+.export-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: 100%;
+    padding: 12px 15px;
+    margin-top: 10px;
+    background-color: #FF427A;
+    color: white;
+    border: none;
+    border-radius: var(--border-radius);
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.1);
+}
+
+.export-btn:hover {
+    background-color: #FF1493;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+}
+
+.export-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 3px -1px rgba(0, 0, 0, 0.1);
+}
+
+.export-btn.loading {
+    opacity: 0.8;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.export-btn i {
+    margin-right: 6px;
+}
+
+.export-btn i.fa-spin {
+    animation: spin 1s infinite linear;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* 通知样式 */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 12px 20px;
+    border-radius: 8px;
+    box-shadow: var(--shadow-md);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 9999;
+    min-width: 300px;
+    transform: translateX(100%);
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.notification.show {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.notification i {
+    font-size: 1.2rem;
+}
+
+.notification.info {
+    background-color: #E6F4FF;
+    color: #0066FF;
+    border-left: 4px solid #1E90FF;
+}
+
+.notification.success {
+    background-color: #EAFFEA;
+    color: #00CC00;
+    border-left: 4px solid #39FF14;
+}
+
+.notification.warning {
+    background-color: #FFF0E0;
+    color: #FF8C00;
+    border-left: 4px solid #FFA500;
+}
+
+.notification.error {
+    background-color: #FFECF2;
+    color: #FF427A;
+    border-left: 4px solid #FF1493;
+}
+
+/* 响应式样式 */
+@media (max-width: 768px) {
+    .notification {
+        min-width: auto;
+        width: calc(100% - 40px);
+        right: 20px;
+    }
+}
+
+/* 卡片预览容器样式（确保导出时文本换行正确） */
+.card-content {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+/* 确保导出图片时内容完整 */
+.card {
+    overflow: visible !important;
+}
+
+/* 输入区域样式 */
+.input-area {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+#formatted-input {
+    border: 1px solid #e5e7eb;
+    border-radius: var(--border-radius);
+    padding: 10px;
+    background-color: white;
+}
+
+#card-content {
+    width: 100%;
+    height: 150px;
+    border: none;
+    background-color: transparent;
+    resize: vertical;
+    outline: none;
+    font-size: 14px;
+    line-height: 1.5;
+    font-family: monospace;
+}
+
+/* 预览区域样式 */
+.preview-container {
+    flex: 1;
+    padding: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    background-color: white;
+    overflow-y: auto;
+    max-height: calc(100vh - 40px);
+}
+
+.card {
+    width: 100%;
+    max-width: 580px;
+    min-height: 480px;
+    background: linear-gradient(135deg, 
+        var(--theme-light) 0%, 
+        var(--theme-secondary) 60%, 
+        var(--theme-light) 100%);
+    border-radius: 32px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1),
+                0 5px 15px rgba(0, 0, 0, 0.05);
+    border: 3px solid var(--theme-accent);
+    position: relative;
+    overflow: hidden !important;
+}
+
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg,
+        rgba(255, 255, 255, 0.7) 0%,
+        rgba(255, 255, 255, 0.3) 100%);
+    opacity: 0.6;
+    border-radius: 29px;
+}
+
+.card-header {
+    background: transparent;
+    padding: 30px;
+    position: relative;
+    z-index: 3;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    border-bottom: 3px dashed var(--theme-accent);
+}
+
+.card-icon {
+    width: 70px;
+    height: 70px;
+    border-radius: 25px;
+    background: var(--theme-accent);
+    box-shadow: 0 6px 0 var(--theme-dark);
+    margin-right: 25px;
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: white;
+}
+
+.card-header h2 {
+    font-size: 2.2rem;
+    color: var(--theme-dark);
+    font-weight: 800;
+    margin: 0;
+    flex: 1;
+    line-height: 1.3;
+}
+
+.card-body {
+    position: relative;
+    z-index: 2;
+    padding: 0 30px 30px;
+    background: transparent;
+    border-radius: 0 0 29px 29px;
+    overflow: hidden;
+}
+
+/* 知识点卡片样式优化 */
+.knowledge-mode .module {
+    margin-bottom: 35px;
+    padding: 30px;
+    border-radius: 30px;
+    background: white;
+    border: 3px solid var(--theme-accent);
+    box-shadow: 0 8px 0 var(--theme-accent);
+    position: relative;
+    overflow: hidden;
+}
+
+.knowledge-mode .module::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: transparent;
+    opacity: 0;
+    border-radius: 27px;
+}
+
+.knowledge-mode h3 {
+    margin: -30px -30px 25px -30px;
+    padding: 20px 30px;
+    font-size: 1.5rem;
+    color: var(--theme-dark);
+    font-weight: 800;
+    background: linear-gradient(135deg,
+        var(--theme-light) 0%,
+        var(--theme-secondary) 100%);
+    border-bottom: 3px dashed var(--theme-accent);
+    border-radius: 27px 27px 0 0;
+    position: relative;
+    z-index: 1;
+}
+
+.knowledge-mode h3::before {
+    content: '💡';
+    margin-right: 12px;
+    font-size: 1.4rem;
+}
+
+.knowledge-mode p {
+    margin-bottom: 20px;
+    line-height: 1.8;
+    color: #444;
+    font-size: 1.15rem;
+    position: relative;
+    padding: 15px 20px;
+    background: linear-gradient(to right,
+        var(--theme-light) 0%,
+        rgba(255, 255, 255, 0.8) 100%);
+    border-radius: 15px;
+    border-left: 4px solid var(--theme-accent);
+    z-index: 1;
+}
+
+/* 知识点内容的新样式 */
+.knowledge-content {
+    margin-bottom: 20px;
+    line-height: 1.8;
+    color: #444;
+    font-size: 1.15rem;
+    position: relative;
+    padding: 15px 20px;
+    background: linear-gradient(to right,
+        var(--theme-light) 0%,
+        rgba(255, 255, 255, 0.8) 100%);
+    border-radius: 15px;
+    border-left: 4px solid var(--theme-accent);
+    z-index: 1;
+}
+
+/* 知识内容容器样式，确保没有任何符号 */
+.knowledge-content-container,
+.knowledge-content-container::before,
+.knowledge-content-container::after {
+    content: none !important;
+    display: block !important;
+    text-indent: 0 !important;
+}
+
+.knowledge-content-container::before,
+.knowledge-content-container::after {
+    display: none !important;
+}
+
+/* 新的纯文本内容样式，确保没有任何符号 */
+.plain-content,
+.plain-content::before,
+.plain-content::after {
+    content: none !important;
+    display: block !important;
+    text-indent: 0 !important;
+}
+
+.plain-content::before,
+.plain-content::after {
+    display: none !important;
+}
+
+/* 全新的知识文本样式，不包含任何图标或符号 */
+.knowledge-text,
+.knowledge-text::before,
+.knowledge-text::after {
+    content: none !important;
+    display: block !important;
+    text-indent: 0 !important;
+}
+
+.knowledge-text::before,
+.knowledge-text::after {
+    content: "" !important;
+    display: none !important;
+}
+
+/* 移除所有可能的前置符号 */
+.module div:not(.thinking):not(.note)::before,
+.module div:not(.thinking):not(.note)::after {
+    content: none !important;
+    display: none !important;
+}
+
+.knowledge-mode .thinking {
+    padding: 25px 30px;
+    border: 3px dashed var(--theme-accent);
+    font-weight: 500;
+    margin: 25px 0;
+    color: #333;
+    font-size: 1.15rem;
+    background: linear-gradient(135deg,
+        var(--theme-light) 0%,
+        rgba(255, 255, 255, 0.9) 100%);
+    border-radius: 25px;
+    position: relative;
+    z-index: 1;
+}
+
+.knowledge-mode .thinking::before {
+    content: '🤔';
+    position: absolute;
+    left: -15px;
+    top: -15px;
+    background: white;
+    width: 35px;
+    height: 35px;
+    border: 3px dashed var(--theme-accent);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+}
+
+.knowledge-mode .note {
+    padding: 25px 30px;
+    background: linear-gradient(135deg,
+        var(--theme-light) 0%,
+        var(--theme-secondary) 100%);
+    border-radius: 25px;
+    color: var(--theme-dark);
+    font-size: 1.15rem;
+    margin-top: 25px;
+    border: 3px solid var(--theme-accent);
+    position: relative;
+    z-index: 1;
+}
+
+.knowledge-mode .note::before {
+    content: '📝';
+    position: absolute;
+    left: -15px;
+    top: -15px;
+    background: white;
+    width: 35px;
+    height: 35px;
+    border: 3px solid var(--theme-accent);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+}
+
+/* 测试题卡片样式优化 */
+.quiz-mode .question {
+    margin-bottom: 35px;
+    border: 3px solid var(--theme-accent);
+    border-radius: 30px;
+    padding: 30px;
+    background: white;
+    box-shadow: 0 8px 0 var(--theme-accent);
+    position: relative;
+    overflow: hidden;
+}
+
+.quiz-mode .question::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: transparent;
+    opacity: 0;
+    border-radius: 27px;
+}
+
+.quiz-mode .question-title {
+    margin: -30px -30px 25px -30px;
+    padding: 20px 30px;
+    font-size: 1.3rem;
+    color: var(--theme-dark);
+    font-weight: 700;
+    background: linear-gradient(135deg,
+        var(--theme-light) 0%,
+        var(--theme-secondary) 100%);
+    border-bottom: 3px dashed var(--theme-accent);
+    border-radius: 27px 27px 0 0;
+    display: flex;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+}
+
+.quiz-mode .question-title::before {
+    content: '🕵️‍♀️';
+    margin-right: 12px;
+    font-size: 1.4rem;
+}
+
+.quiz-mode .options {
+    display: grid;
+    gap: 15px;
+    margin-top: 20px;
+    padding: 0 10px;
+}
+
+.quiz-mode .option {
+    padding: 15px 20px;
+    border-radius: 20px;
+    background: linear-gradient(135deg,
+        var(--theme-light) 0%,
+        rgba(255, 255, 255, 0.9) 100%);
+    border: 3px solid var(--theme-accent);
+    color: #444;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+}
+
+.quiz-mode .option-number {
+    width: 35px;
+    height: 35px;
+    background: white;
+    color: var(--theme-dark);
+    border: 3px solid var(--theme-accent);
+    border-radius: 50%;
+    margin-right: 15px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.quiz-mode .option.selected {
+    background: linear-gradient(135deg,
+        var(--theme-accent) 0%,
+        var(--theme-primary) 100%);
+    color: white;
+    border-color: var(--theme-dark);
+    box-shadow: 0 4px 0 var(--theme-dark);
+}
+
+.quiz-mode .option.selected .option-number {
+    background: white;
+    color: var(--theme-dark);
+    border-color: white;
+}
+
+.quiz-mode .option.correct {
+    background: #B1F3B1;
+    border-color: #4CAF50;
+    color: #1B5E20;
+}
+
+.quiz-mode .option.correct .option-number {
+    background: white;
+    color: #1B5E20;
+    border-color: #4CAF50;
+}
+
+.quiz-mode .option.correct::after {
+    content: '✅';
+    margin-left: auto;
+    font-size: 1.4rem;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .app-container {
+        flex-direction: column;
+    }
+    
+    .toolbar {
+        width: 100%;
+        border-left: none;
+        border-top: 1px solid #e5e7eb;
+        max-height: none;
+        height: auto;
+    }
+
+    .preview-container {
+        max-height: none;
+        height: auto;
+        padding: 16px;
+    }
+
+    .card {
+        max-width: 100%;
+    }
+
+    .app-tip {
+        font-size: 12px;
+        padding: 6px 10px;
+    }
+}
+
+/* 自定义布局样式 */
+.card-body[data-layout="1"] .module {
+    margin-bottom: 20px;
+}
+
+.card-body[data-layout="2"] .module:nth-child(odd) {
+    margin-right: 2%;
+}
+
+.card-body[data-layout="2"] .module:nth-child(even) {
+    margin-left: 2%;
+}
+
+.card-body[data-layout="3"] {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.card-body[data-layout="3"] .module {
+    width: 48%;
+    margin: 1%;
+}
+
+/* 自定义布局样式 - 测试题 */
+.card-body[data-layout="1"] .question {
+    margin-bottom: 20px;
+}
+
+.card-body[data-layout="2"] .options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-left: 0;
+}
+
+.card-body[data-layout="3"] .options {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.card-body[data-layout="3"] .option {
+    width: 48%;
+    margin: 1%;
+}
+
+/* 添加一些精致的滚动条 */
+.toolbar::-webkit-scrollbar, 
+.preview-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.toolbar::-webkit-scrollbar-track, 
+.preview-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.toolbar::-webkit-scrollbar-thumb, 
+.preview-container::-webkit-scrollbar-thumb {
+    background: #d1d5db;
+    border-radius: 3px;
+}
+
+.toolbar::-webkit-scrollbar-thumb:hover, 
+.preview-container::-webkit-scrollbar-thumb:hover {
+    background: #9ca3af;
+}
+
+/* 字体样式配置 */
+.font-default { font-family: 'Microsoft YaHei', Arial, sans-serif; }
+.font-sans { font-family: 'Helvetica Neue', Arial, sans-serif; }
+.font-serif { font-family: 'Georgia', 'Times New Roman', serif; }
+.font-mono { font-family: 'Consolas', 'Courier New', monospace; }
+.font-rounded { font-family: 'Varela Round', 'Comic Sans MS', sans-serif; }
+.font-elegant { font-family: 'Playfair Display', 'Times New Roman', serif; }
+.font-handwriting { font-family: 'Dancing Script', 'Brush Script MT', cursive; }
+.font-creative { font-family: 'Lobster', 'Impact', cursive; }
+.font-modern { font-family: 'Montserrat', 'Trebuchet MS', sans-serif; }
+.font-tech { font-family: 'Roboto Mono', 'Lucida Console', monospace; }
+.font-msyh { font-family: '微软雅黑', 'Microsoft YaHei', sans-serif; }
+.font-fangsong { font-family: '仿宋', 'FangSong', serif; }
+.font-huakang { font-family: '华康圆体', 'HuaKangYuanTi', 'Microsoft JhengHei', sans-serif; }
+.font-lishu { font-family: '隶书', 'LiSu', serif; }
+
+/* 字体选择器样式 */
+.font-selection {
+    width: 100%;
+    margin-bottom: 8px;
+}
+
+.font-selector {
+    width: 100%;
+    padding: 8px;
+    border-radius: var(--border-radius);
+    border: 1px solid #e5e7eb;
+    background-color: white;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: #4b5563;
+    transition: all 0.2s;
+}
+
+.font-selector:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 1px var(--primary-color);
+}
+
+/* 应用渐变主题到卡片元素 */
+.module.theme-cherry,
+.module.theme-butter,
+.module.theme-indigo,
+.module.theme-dill,
+.module.theme-oat,
+.module.theme-mocha {
+    border-left: 4px solid;
+    border-image: var(--theme-primary) 1;
+}
+
+.thinking i {
+    color: var(--theme-accent);
+}
+
+.option.selected.theme-cherry,
+.option.selected.theme-butter,
+.option.selected.theme-indigo,
+.option.selected.theme-dill,
+.option.selected.theme-oat,
+.option.selected.theme-mocha {
+    background: var(--theme-primary);
+    color: var(--theme-text);
+}
+
+/* 用于轮廓装饰的主题边框 */
+.outline .card {
+    border-color: var(--theme-accent) !important;
+}
+
+/* 卡片弹跳动画 */
+.card-bounce {
+    animation: none;
+}
+
+/* 五彩纸屑样式 */
+.confetti-container {
+    display: none;
+}
+
+/* 正确答案样式 */
+.option.correct {
+    background-color: rgba(52, 211, 153, 0.2);
+    border-color: #34d399 !important;
+    box-shadow: 0 0 0 2px rgba(52, 211, 153, 0.3);
+    transform: translateX(5px);
+}
+
+.option.correct .option-number {
+    background-color: #34d399;
+    color: white;
+    transform: scale(1.1);
+}
+
+.option.correct:after {
+    content: "✓";
+    position: absolute;
+    right: 10px;
+    color: #34d399;
+    font-weight: bold;
+    font-size: 1.2em;
+    animation: none;
+}
+
+/* 浮动卡通角色 */
+.floating-character {
+    display: none;
+}
+
+/* 应用淡入动画到标题 */
+.card-header h2 {
+    animation: none;
+}
+
+/* 互动标题动画 */
+@keyframes none {
+    from { transform: none; }
+    to { transform: none; }
+}
+
+/* 高饱和度主题变量 */
+.theme-hotpink {
+    --theme-primary: linear-gradient(135deg, #FF427A, #FF85A1);
+    --theme-text: white;
+    --theme-secondary: #FFECF2;
+    --theme-accent: #FF427A;
+}
+
+.theme-coral {
+    --theme-primary: linear-gradient(135deg, #FF7F50, #FFA07A);
+    --theme-text: white;
+    --theme-secondary: #FFEFE9;
+    --theme-accent: #FF7F50;
+}
+
+.theme-neonblue {
+    --theme-primary: linear-gradient(135deg, #1E90FF, #00BFFF);
+    --theme-text: white;
+    --theme-secondary: #E6F4FF;
+    --theme-accent: #1E90FF;
+}
+
+.theme-electricpurple {
+    --theme-primary: linear-gradient(135deg, #8A2BE2, #9932CC);
+    --theme-text: white;
+    --theme-secondary: #F2E6FF;
+    --theme-accent: #8A2BE2;
+}
+
+.theme-limegreen {
+    --theme-primary: linear-gradient(135deg, #32CD32, #7CFC00);
+    --theme-text: black;
+    --theme-secondary: #EAFFD6;
+    --theme-accent: #32CD32;
+}
+
+.theme-magenta {
+    --theme-primary: linear-gradient(135deg, #FF00FF, #FF69B4);
+    --theme-text: white;
+    --theme-secondary: #FFE6FF;
+    --theme-accent: #FF00FF;
+}
+
+.theme-goldenrod {
+    --theme-primary: linear-gradient(135deg, #DAA520, #FFD700);
+    --theme-text: black;
+    --theme-secondary: #FFF8D6;
+    --theme-accent: #DAA520;
+}
+
+.theme-turquoise {
+    --theme-primary: linear-gradient(135deg, #40E0D0, #5F9EA0);
+    --theme-text: black;
+    --theme-secondary: #E0FFFA;
+    --theme-accent: #40E0D0;
+}
+
+.theme-crimson {
+    --theme-primary: linear-gradient(135deg, #DC143C, #FF4500);
+    --theme-text: white;
+    --theme-secondary: #FFE6EA;
+    --theme-accent: #DC143C;
+}
+
+.theme-royalblue {
+    --theme-primary: linear-gradient(135deg, #4169E1, #0000CD);
+    --theme-text: white;
+    --theme-secondary: #E6ECFF;
+    --theme-accent: #4169E1;
+}
+
+.theme-aqua {
+    --theme-primary: linear-gradient(135deg, #00FFFF, #00CED1);
+    --theme-text: black;
+    --theme-secondary: #E0FFFF;
+    --theme-accent: #00FFFF;
+}
+
+.theme-violet {
+    --theme-primary: linear-gradient(135deg, #EE82EE, #9370DB);
+    --theme-text: white;
+    --theme-secondary: #F9E6FF;
+    --theme-accent: #EE82EE;
+}
+
+.theme-neonorange {
+    --theme-primary: linear-gradient(135deg, #FF8C00, #FFA500);
+    --theme-text: white;
+    --theme-secondary: #FFF0E0;
+    --theme-accent: #FF8C00;
+}
+
+.theme-bubblegum {
+    --theme-primary: linear-gradient(135deg, #FF77FF, #FFD1DC);
+    --theme-text: black;
+    --theme-secondary: #FFECF5;
+    --theme-accent: #FF77FF;
+}
+
+.theme-tropicalgreen {
+    --theme-primary: linear-gradient(135deg, #00FA9A, #3CB371);
+    --theme-text: black;
+    --theme-secondary: #E0FFF2;
+    --theme-accent: #00FA9A;
+}
+
+.theme-fuschia {
+    --theme-primary: linear-gradient(135deg, #FF1493, #C71585);
+    --theme-text: white;
+    --theme-secondary: #FFE3F0;
+    --theme-accent: #FF1493;
+}
+
+.theme-oceanblue {
+    --theme-primary: linear-gradient(135deg, #0066FF, #00CCFF);
+    --theme-text: white;
+    --theme-secondary: #E6F5FF;
+    --theme-accent: #0066FF;
+}
+
+.theme-neongreen {
+    --theme-primary: linear-gradient(135deg, #39FF14, #00FF00);
+    --theme-text: black;
+    --theme-secondary: #EAFFEA;
+    --theme-accent: #39FF14;
+}
+
+.theme-sunsetorange {
+    --theme-primary: linear-gradient(135deg, #FF4500, #FF8C00);
+    --theme-text: white;
+    --theme-secondary: #FFEDE0;
+    --theme-accent: #FF4500;
+}
+
+.theme-berrypurple {
+    --theme-primary: linear-gradient(135deg, #8A2BE2, #BA55D3);
+    --theme-text: white;
+    --theme-secondary: #F5E6FF;
+    --theme-accent: #8A2BE2;
+}
+
+/* 更新儿童友好的主题变量 */
+.theme-softpink {
+    --theme-gradient: linear-gradient(135deg, #FF8BA7 0%, #FFB7C3 100%);
+    --theme-primary: #FF8BA7;
+    --theme-secondary: #FFB7C3;
+    --theme-light: #FFF0F3;
+    --theme-dark: #C5677E;
+    --theme-accent: #FF9FB8;
+}
+
+.theme-lilac {
+    --theme-primary: #A48DD1;
+    --theme-text: white;
+    --theme-secondary: #BEAEE2;
+    --theme-light: #F2EEFE;
+    --theme-dark: #7C6BA6;
+    --theme-accent: #AE9CDA;
+}
+
+.theme-mint {
+    --theme-gradient: linear-gradient(135deg, #76E7B8 0%, #91ECC5 100%);
+    --theme-primary: #76E7B8;
+    --theme-secondary: #B5EAD7;
+    --theme-light: #E8FBF2;
+    --theme-dark: #4EB892;
+    --theme-accent: #91ECC5;
+}
+
+.theme-peach {
+    --theme-gradient: linear-gradient(135deg, #FEBE98 0%, #FFCAA6 100%);
+    --theme-primary: #FEBE98;
+    --theme-secondary: #FFD8BE;
+    --theme-light: #FFF6EE;
+    --theme-dark: #D19573;
+    --theme-accent: #FFCAA6;
+}
+
+.theme-skyblue {
+    --theme-gradient: linear-gradient(135deg, #69C1FF 0%, #85CCFF 100%);
+    --theme-primary: #69C1FF;
+    --theme-secondary: #A8E0FF;
+    --theme-light: #EBF7FF;
+    --theme-dark: #4798D3;
+    --theme-accent: #85CCFF;
+}
+
+.theme-marigold {
+    --theme-primary: #FFD166;
+    --theme-text: black;
+    --theme-secondary: #FFEAA0;
+    --theme-light: #FFFAEB;
+    --theme-dark: #D9AD40;
+    --theme-accent: #FFE07F;
+}
+
+.theme-babyblue {
+    --theme-primary: #89E3F5;
+    --theme-text: black;
+    --theme-secondary: #C7F5FE;
+    --theme-light: #F0FDFF;
+    --theme-dark: #5EBFD2;
+    --theme-accent: #A2ECFB;
+}
+
+.theme-lavender {
+    --theme-gradient: linear-gradient(135deg, #D197F9 0%, #DBAEF8 100%);
+    --theme-primary: #D197F9;
+    --theme-secondary: #E0C1F4;
+    --theme-light: #F9F0FE;
+    --theme-dark: #A96DD1;
+    --theme-accent: #DBAEF8;
+}
+
+.theme-sage {
+    --theme-primary: #B1C99C;
+    --theme-text: black;
+    --theme-secondary: #CDD8B9;
+    --theme-light: #F3F6EC;
+    --theme-dark: #8DA078;
+    --theme-accent: #BFCFAA;
+}
+
+.theme-coral {
+    --theme-primary: #FF9580;
+    --theme-text: white;
+    --theme-secondary: #FFB7A2;
+    --theme-light: #FFEEE9;
+    --theme-dark: #D37260;
+    --theme-accent: #FFA491;
+}
+
+.theme-turquoise {
+    --theme-primary: #53C5B9;
+    --theme-text: black;
+    --theme-secondary: #86E3CE;
+    --theme-light: #E3F8F4;
+    --theme-dark: #409F94;
+    --theme-accent: #6CD4C2;
+}
+
+.theme-blush {
+    --theme-primary: #FFAFCC;
+    --theme-text: black;
+    --theme-secondary: #FFC8DD;
+    --theme-light: #FFF0F5;
+    --theme-dark: #D989A6;
+    --theme-accent: #FFBCD4;
+}
+
+.theme-butter {
+    --theme-primary: #F8D175;
+    --theme-text: white;
+    --theme-secondary: #FFE8A3;
+    --theme-light: #FFFAEB;
+    --theme-dark: #D0AD4E;
+    --theme-accent: #FFE089;
+}
+
+.theme-periwinkle {
+    --theme-primary: #9FADE0;
+    --theme-text: white;
+    --theme-secondary: #C1CBFF;
+    --theme-light: #F0F2FF;
+    --theme-dark: #7D8CBD;
+    --theme-accent: #AFBCF2;
+}
+
+.theme-pistachio {
+    --theme-primary: #B6D989;
+    --theme-text: white;
+    --theme-secondary: #D1EBAA;
+    --theme-light: #F4FAEB;
+    --theme-dark: #94B566;
+    --theme-accent: #C3E399;
+}
+
+.theme-bubblegum {
+    --theme-primary: #FFA6DD;
+    --theme-text: white;
+    --theme-secondary: #FFBCEB;
+    --theme-light: #FFEFFA;
+    --theme-dark: #D980B9;
+    --theme-accent: #FFB0E4;
+}
+
+.theme-cloudy {
+    --theme-primary: #C6D8E4;
+    --theme-text: white;
+    --theme-secondary: #DCE8F1;
+    --theme-light: #F5F9FC;
+    --theme-dark: #A2B5C2;
+    --theme-accent: #D1E0EB;
+}
+
+.theme-banana {
+    --theme-primary: #FFF499;
+    --theme-text: white;
+    --theme-secondary: #FFFACD;
+    --theme-light: #FFFEF1;
+    --theme-dark: #D8CE6D;
+    --theme-accent: #FFF7B3;
+}
+
+.theme-seafoam {
+    --theme-primary: #98E6D1;
+    --theme-text: white;
+    --theme-secondary: #C4F4E8;
+    --theme-light: #EFFDF8;
+    --theme-dark: #72C4AD;
+    --theme-accent: #ABEDDC;
+}
+
+.theme-strawberry {
+    --theme-primary: #FF6B82;
+    --theme-text: white;
+    --theme-secondary: #FF9AA2;
+    --theme-light: #FFF0F1;
+    --theme-dark: #D34F64;
+    --theme-accent: #FF8391;
+}
+
+.theme-slate {
+    --theme-primary: #98AFC7;
+    --theme-text: white;
+    --theme-secondary: #B1C5D3;
+    --theme-light: #EDF2F7;
+    --theme-dark: #7994AE;
+    --theme-accent: #A4B9CA;
+}
+
+.theme-sunflower {
+    --theme-primary: #FFDF70;
+    --theme-text: white;
+    --theme-secondary: #FFEBA8;
+    --theme-light: #FFFAE9;
+    --theme-dark: #D9BB49;
+    --theme-accent: #FFE58C;
+}
+
+.theme-moss {
+    --theme-primary: #99C56E;
+    --theme-text: white;
+    --theme-secondary: #B9E28C;
+    --theme-light: #F2F9E9;
+    --theme-dark: #76A148;
+    --theme-accent: #A9D37C;
+}
+
+.theme-cornflower {
+    --theme-primary: #5F84DF;
+    --theme-text: white;
+    --theme-secondary: #85A7FF;
+    --theme-light: #ECF1FF;
+    --theme-dark: #4A69B7;
+    --theme-accent: #7295EC;
+}
+
+/* RGB配色值 */
+.card[data-theme="theme-softpink"] { --theme-light-rgb: 255, 240, 243; }
+.card[data-theme="theme-lilac"] { --theme-light-rgb: 242, 238, 254; }
+.card[data-theme="theme-mint"] { --theme-light-rgb: 232, 251, 242; }
+.card[data-theme="theme-peach"] { --theme-light-rgb: 255, 246, 238; }
+.card[data-theme="theme-skyblue"] { --theme-light-rgb: 235, 247, 255; }
+.card[data-theme="theme-marigold"] { --theme-light-rgb: 255, 250, 235; }
+.card[data-theme="theme-babyblue"] { --theme-light-rgb: 240, 253, 255; }
+.card[data-theme="theme-lavender"] { --theme-light-rgb: 249, 240, 254; }
+.card[data-theme="theme-sage"] { --theme-light-rgb: 243, 246, 236; }
+.card[data-theme="theme-coral"] { --theme-light-rgb: 255, 238, 233; }
+.card[data-theme="theme-turquoise"] { --theme-light-rgb: 227, 248, 244; }
+.card[data-theme="theme-blush"] { --theme-light-rgb: 255, 240, 245; }
+.card[data-theme="theme-butter"] { --theme-light-rgb: 255, 250, 235; }
+.card[data-theme="theme-periwinkle"] { --theme-light-rgb: 240, 242, 255; }
+.card[data-theme="theme-pistachio"] { --theme-light-rgb: 244, 250, 235; }
+.card[data-theme="theme-bubblegum"] { --theme-light-rgb: 255, 239, 250; }
+.card[data-theme="theme-cloudy"] { --theme-light-rgb: 245, 249, 252; }
+.card[data-theme="theme-banana"] { --theme-light-rgb: 255, 254, 241; }
+.card[data-theme="theme-seafoam"] { --theme-light-rgb: 239, 253, 248; }
+.card[data-theme="theme-strawberry"] { --theme-light-rgb: 255, 240, 241; }
+.card[data-theme="theme-slate"] { --theme-light-rgb: 237, 242, 247; }
+.card[data-theme="theme-sunflower"] { --theme-light-rgb: 255, 250, 233; }
+.card[data-theme="theme-moss"] { --theme-light-rgb: 242, 249, 233; }
+.card[data-theme="theme-cornflower"] { --theme-light-rgb: 236, 241, 255; }
+
+/* 添加格式说明的样式 */
+.format-help {
+    margin-bottom: 0;
+    border-left: 3px solid #9D7AFF;
+}
+
+/* 格式说明触发器样式 */
+.format-help-trigger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 0.85em;
+    color: #666;
+    margin-left: 8px;
+    transition: color 0.2s;
+}
+
+.format-help-trigger:hover {
+    color: #007bff;
+}
+
+/* 格式说明样式 */
+.format-help {
+    display: none;
+    position: absolute;
+    z-index: 100;
+    width: 280px;
+    background-color: white;
+    border-radius: 6px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    padding: 12px;
+    margin-top: 5px;
+    font-size: 0.85rem;
+    color: #555;
+    border-left: 3px solid #9D7AFF;
+}
+
+.format-help p {
+    margin: 5px 0;
+}
+
+.format-help pre {
+    background-color: #f8f9fa;
+    padding: 8px;
+    border-radius: 3px;
+    margin: 8px 0;
+    border: 1px solid #e9ecef;
+    white-space: pre-wrap;
+    font-size: 0.8rem;
+}
+
+.input-area h3 a {
+    text-decoration: none;
+    color: #007bff;
+    transition: color 0.2s;
+}
+
+.input-area h3 a:hover {
+    color: #0056b3;
+    text-decoration: underline;
+}
+
+/* 新增的渐变色主题变量 */
+.theme-grad-yellow-orange {
+    --theme-primary: linear-gradient(135deg, #FFEB3B, #FF9800);
+    --theme-text: black;
+    --theme-secondary: #FFF9C4;
+    --theme-light: #FFFDE7;
+    --theme-dark: #F57C00;
+    --theme-accent: #FFB300;
+}
+
+.theme-grad-pink {
+    --theme-primary: linear-gradient(135deg, #FF4081, #F06292);
+    --theme-text: white;
+    --theme-secondary: #F8BBD0;
+    --theme-light: #FCE4EC;
+    --theme-dark: #C2185B;
+    --theme-accent: #EC407A;
+}
+
+.theme-grad-cyan-blue {
+    --theme-primary: linear-gradient(135deg, #00BCD4, #2196F3);
+    --theme-text: white;
+    --theme-secondary: #B2EBF2;
+    --theme-light: #E0F7FA;
+    --theme-dark: #0288D1;
+    --theme-accent: #00ACC1;
+}
+
+.theme-grad-purple {
+    --theme-primary: linear-gradient(135deg, #673AB7, #9C27B0);
+    --theme-text: white;
+    --theme-secondary: #D1C4E9;
+    --theme-light: #EDE7F6;
+    --theme-dark: #7B1FA2;
+    --theme-accent: #7E57C2;
+}
+
+.theme-grad-purple-pink {
+    --theme-primary: linear-gradient(135deg, #9C27B0, #E91E63);
+    --theme-text: white;
+    --theme-secondary: #E1BEE7;
+    --theme-light: #F3E5F5;
+    --theme-dark: #C2185B;
+    --theme-accent: #AB47BC;
+}
+
+.theme-grad-green {
+    --theme-primary: linear-gradient(135deg, #4CAF50, #8BC34A);
+    --theme-text: white;
+    --theme-secondary: #C8E6C9;
+    --theme-light: #E8F5E9;
+    --theme-dark: #388E3C;
+    --theme-accent: #66BB6A;
+}
+
+.theme-grad-pink-purple {
+    --theme-primary: linear-gradient(135deg, #E91E63, #9C27B0);
+    --theme-text: white;
+    --theme-secondary: #F8BBD0;
+    --theme-light: #FCE4EC;
+    --theme-dark: #7B1FA2;
+    --theme-accent: #D81B60;
+}
+
+.theme-grad-blue-purple {
+    --theme-primary: linear-gradient(135deg, #3F51B5, #673AB7);
+    --theme-text: white;
+    --theme-secondary: #C5CAE9;
+    --theme-light: #E8EAF6;
+    --theme-dark: #512DA8;
+    --theme-accent: #5C6BC0;
+}
+
+.theme-grad-teal-green {
+    --theme-primary: linear-gradient(135deg, #009688, #4CAF50);
+    --theme-text: white;
+    --theme-secondary: #B2DFDB;
+    --theme-light: #E0F2F1;
+    --theme-dark: #2E7D32;
+    --theme-accent: #26A69A;
+}
+
+.theme-grad-blue {
+    --theme-primary: linear-gradient(135deg, #2196F3, #3F51B5);
+    --theme-text: white;
+    --theme-secondary: #BBDEFB;
+    --theme-light: #E3F2FD;
+    --theme-dark: #303F9F;
+    --theme-accent: #42A5F5;
+}
+
+.theme-grad-yellow {
+    --theme-primary: linear-gradient(135deg, #FFEB3B, #FFC107);
+    --theme-text: black;
+    --theme-secondary: #FFF9C4;
+    --theme-light: #FFFDE7;
+    --theme-dark: #FFA000;
+    --theme-accent: #FFEE58;
+}
+
+.theme-grad-light-blue {
+    --theme-primary: linear-gradient(135deg, #03A9F4, #29B6F6);
+    --theme-text: white;
+    --theme-secondary: #B3E5FC;
+    --theme-light: #E1F5FE;
+    --theme-dark: #0277BD;
+    --theme-accent: #29B6F6;
+}
+
+.theme-grad-orange-red {
+    --theme-primary: linear-gradient(135deg, #FF9800, #FF5722);
+    --theme-text: white;
+    --theme-secondary: #FFE0B2;
+    --theme-light: #FFF3E0;
+    --theme-dark: #E64A19;
+    --theme-accent: #FB8C00;
+}
+
+.theme-grad-purple-light {
+    --theme-primary: linear-gradient(135deg, #9575CD, #B39DDB);
+    --theme-text: white;
+    --theme-secondary: #D1C4E9;
+    --theme-light: #EDE7F6;
+    --theme-dark: #5E35B1;
+    --theme-accent: #7E57C2;
+}
+
+.theme-grad-teal {
+    --theme-primary: linear-gradient(135deg, #26A69A, #80CBC4);
+    --theme-text: white;
+    --theme-secondary: #B2DFDB;
+    --theme-light: #E0F2F1;
+    --theme-dark: #00796B;
+    --theme-accent: #26A69A;
+}
+
+.theme-grad-peach {
+    --theme-primary: linear-gradient(135deg, #FFAB91, #FFCCBC);
+    --theme-text: black;
+    --theme-secondary: #FFCCBC;
+    --theme-light: #FBE9E7;
+    --theme-dark: #E64A19;
+    --theme-accent: #FF7043;
+}
+
+.theme-grad-light-green {
+    --theme-primary: linear-gradient(135deg, #8BC34A, #AED581);
+    --theme-text: black;
+    --theme-secondary: #DCEDC8;
+    --theme-light: #F1F8E9;
+    --theme-dark: #558B2F;
+    --theme-accent: #7CB342;
+}
+
+.theme-grad-lavender {
+    --theme-primary: linear-gradient(135deg, #9575CD, #D1C4E9);
+    --theme-text: white;
+    --theme-secondary: #D1C4E9;
+    --theme-light: #EDE7F6;
+    --theme-dark: #5E35B1;
+    --theme-accent: #7E57C2;
+}
+
+.theme-grad-pink-red {
+    --theme-primary: linear-gradient(135deg, #EC407A, #EF5350);
+    --theme-text: white;
+    --theme-secondary: #F8BBD0;
+    --theme-light: #FCE4EC;
+    --theme-dark: #C62828;
+    --theme-accent: #EC407A;
+}
+
+.theme-grad-orange {
+    --theme-primary: linear-gradient(135deg, #FF9800, #FFB74D);
+    --theme-text: black;
+    --theme-secondary: #FFE0B2;
+    --theme-light: #FFF3E0;
+    --theme-dark: #EF6C00;
+    --theme-accent: #FFA726;
+}
+
+/* 为新增的渐变色添加RGB值配置 */
+.card[data-theme="theme-grad-yellow-orange"] { --theme-light-rgb: 255, 253, 231; }
+.card[data-theme="theme-grad-pink"] { --theme-light-rgb: 252, 228, 236; }
+.card[data-theme="theme-grad-cyan-blue"] { --theme-light-rgb: 224, 247, 250; }
+.card[data-theme="theme-grad-purple"] { --theme-light-rgb: 237, 231, 246; }
+.card[data-theme="theme-grad-purple-pink"] { --theme-light-rgb: 243, 229, 245; }
+.card[data-theme="theme-grad-green"] { --theme-light-rgb: 232, 245, 233; }
+.card[data-theme="theme-grad-pink-purple"] { --theme-light-rgb: 252, 228, 236; }
+.card[data-theme="theme-grad-blue-purple"] { --theme-light-rgb: 232, 234, 246; }
+.card[data-theme="theme-grad-teal-green"] { --theme-light-rgb: 224, 242, 241; }
+.card[data-theme="theme-grad-blue"] { --theme-light-rgb: 227, 242, 253; }
+.card[data-theme="theme-grad-yellow"] { --theme-light-rgb: 255, 253, 231; }
+.card[data-theme="theme-grad-light-blue"] { --theme-light-rgb: 225, 245, 254; }
+.card[data-theme="theme-grad-orange-red"] { --theme-light-rgb: 255, 243, 224; }
+.card[data-theme="theme-grad-purple-light"] { --theme-light-rgb: 237, 231, 246; }
+.card[data-theme="theme-grad-teal"] { --theme-light-rgb: 224, 242, 241; }
+.card[data-theme="theme-grad-peach"] { --theme-light-rgb: 251, 233, 231; }
+.card[data-theme="theme-grad-light-green"] { --theme-light-rgb: 241, 248, 233; }
+.card[data-theme="theme-grad-lavender"] { --theme-light-rgb: 237, 231, 246; }
+.card[data-theme="theme-grad-pink-red"] { --theme-light-rgb: 252, 228, 236; }
+.card[data-theme="theme-grad-orange"] { --theme-light-rgb: 255, 243, 224; } 
