@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     // 初始化变量
     let currentMode = 'knowledge'; // 默认为知识点卡片模式
-    let currentColor = 'theme-softpink'; // 默认为柔粉色高饱和度主题
+    let currentColor = 'theme-sunflower'; // 默认为金黄色主题
     let currentLayout = '1'; // 默认布局样式
     let currentFont = 'font-default'; // 默认字体
     let moduleCount = 1; // 默认模块数量
@@ -816,7 +816,13 @@ document.addEventListener('DOMContentLoaded', function() {
             // 获取主题名称和可能的主题类
             const colorOption = document.querySelector('.color-option.selected');
             if (!colorOption) {
-                console.warn('没有找到选中的颜色选项');
+                console.warn('没有找到选中的颜色选项，应用默认金黄色主题');
+                // 如果没有找到选中的颜色选项，则选择金黄色主题
+                const goldOption = document.querySelector('.color-option[data-color="theme-sunflower"]');
+                if (goldOption) {
+                    goldOption.classList.add('selected');
+                    console.log('已应用默认金黄色主题');
+                }
                 return;
             }
             
@@ -856,11 +862,96 @@ document.addEventListener('DOMContentLoaded', function() {
             });
             
             console.log('主题颜色已更新:', themeClass);
+            
+            // 使函数在全局对象中可用，以便其他脚本可以调用
+            window.updateCardColors = updateCardColors;
+            
+            // 根据当前主题计算对应的颜色值
+            const themeRGB = getThemeRGB(themeClass);
+            const themeColor = `rgba(${themeRGB}, 0.75)`;
+            
+            // 更新全局CSS变量
+            document.documentElement.style.setProperty('--theme-color-rgb', themeRGB);
+            
+            // 记录主题变化
+            if (typeof window.lastAppliedColor !== 'undefined') {
+                window.lastAppliedColor = themeColor;
+            }
+            
+            // 尝试将当前主题颜色传递给代码流
+            setTimeout(function() {
+                try {
+                    const iframe = document.querySelector('iframe[src*="code-stream.html"]');
+                    if (iframe && iframe.contentWindow) {
+                        console.log('向代码流发送当前主题颜色:', themeColor);
+                        iframe.contentWindow.postMessage({
+                            type: 'changeTheme',
+                            color: themeColor
+                        }, '*');
+                    }
+                } catch(e) {
+                    console.error('向代码流发送颜色失败:', e);
+                }
+            }, 300);
         } catch (error) {
             console.error('更新卡片颜色时出错:', error);
         }
     }
     
+    // 根据主题类名获取对应的RGB值
+    function getThemeRGB(themeClass) {
+        // 主题颜色映射表
+        const themeColorMap = {
+            'theme-softpink': '255, 192, 203',
+            'theme-lilac': '200, 162, 200',
+            'theme-mint': '152, 255, 152',
+            'theme-peach': '255, 229, 180',
+            'theme-skyblue': '135, 206, 235',
+            'theme-marigold': '255, 165, 0',
+            'theme-babyblue': '137, 207, 240',
+            'theme-lavender': '180, 160, 240',
+            'theme-sage': '186, 208, 136',
+            'theme-coral': '255, 127, 80',
+            'theme-turquoise': '48, 213, 200',
+            'theme-blush': '255, 111, 207',
+            'theme-butter': '255, 255, 102',
+            'theme-periwinkle': '204, 204, 255',
+            'theme-pistachio': '147, 197, 114',
+            'theme-bubblegum': '255, 105, 180',
+            'theme-cloudy': '200, 200, 225',
+            'theme-banana': '255, 225, 53',
+            'theme-seafoam': '120, 222, 213',
+            'theme-strawberry': '252, 90, 141',
+            'theme-slate': '112, 128, 144',
+            'theme-sunflower': '255, 215, 0',
+            'theme-moss': '134, 180, 102',
+            'theme-cornflower': '100, 149, 237',
+            'theme-grad-yellow-orange': '255, 190, 11',
+            'theme-grad-pink': '255, 105, 180',
+            'theme-grad-cyan-blue': '0, 190, 214',
+            'theme-grad-purple': '128, 0, 128',
+            'theme-grad-purple-pink': '180, 70, 200',
+            'theme-grad-green': '76, 187, 23',
+            'theme-grad-pink-purple': '219, 112, 219',
+            'theme-grad-blue-purple': '65, 105, 225',
+            'theme-grad-teal-green': '20, 180, 170',
+            'theme-grad-blue': '30, 144, 255',
+            'theme-grad-yellow': '255, 223, 0',
+            'theme-grad-light-blue': '173, 216, 230',
+            'theme-grad-orange-red': '255, 99, 71',
+            'theme-grad-purple-light': '147, 112, 219',
+            'theme-grad-teal': '0, 128, 128',
+            'theme-grad-peach': '255, 218, 185',
+            'theme-grad-light-green': '144, 238, 144',
+            'theme-grad-lavender': '230, 230, 250',
+            'theme-grad-pink-red': '255, 20, 147',
+            'theme-grad-orange': '255, 165, 0'
+        };
+        
+        // 返回主题对应的RGB值，如果找不到则返回金黄色
+        return themeColorMap[themeClass] || '255, 215, 0';
+    }
+
     // 显示通知函数
     function showNotification(message, type = 'info') {
         // 移除所有已有的通知

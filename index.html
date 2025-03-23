@@ -7,6 +7,14 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Dancing+Script:wght@400;700&family=Lobster&family=Montserrat:wght@400;500;600&family=Varela+Round&family=Roboto+Mono&display=swap">
+    <!-- 设置默认金黄色主题 -->
+    <style>
+        :root {
+            --theme-color-rgb: 255, 215, 0;
+            --theme-color-glow: rgba(255, 215, 0, 0.75);
+            --default-theme: theme-sunflower;
+        }
+    </style>
     <!-- 预加载中文字体 -->
     <style>
         @font-face {
@@ -30,6 +38,105 @@
             font-display: swap;
         }
     </style>
+    <!-- 默认金黄色主题设置脚本 -->
+    <script>
+        // 页面加载完成后设置默认颜色为金黄色
+        window.addEventListener('DOMContentLoaded', function() {
+            const goldColor = 'rgba(255, 215, 0, 0.75)';
+            const goldThemeClass = 'theme-sunflower';
+            
+            console.log('正在应用金黄色主题...');
+            
+            // 立即设置CSS变量
+            document.documentElement.style.setProperty('--theme-color-rgb', '255, 215, 0');
+            document.documentElement.style.setProperty('--theme-color-glow', 'rgba(255, 215, 0, 0.75)');
+            
+            // 立即应用到卡片元素
+            const card = document.querySelector('.card');
+            if (card) {
+                // 移除其他主题类
+                Array.from(card.classList)
+                    .filter(cls => cls.startsWith('theme-'))
+                    .forEach(cls => card.classList.remove(cls));
+                
+                // 添加金黄色主题类
+                card.classList.add(goldThemeClass);
+                console.log('已将金黄色主题应用到卡片元素');
+            }
+            
+            // 记录当前应用的颜色，以便其他脚本使用
+            window.lastAppliedColor = goldColor;
+            window.lastDetectedThemeColor = goldColor;
+            
+            // 选择默认颜色选项并应用
+            setTimeout(function() {
+                // 移除之前选中的颜色
+                document.querySelectorAll('.color-option.selected').forEach(el => {
+                    el.classList.remove('selected');
+                });
+                
+                // 选中金黄色选项
+                const goldOption = document.querySelector(`.color-option[data-color="${goldThemeClass}"]`);
+                if (goldOption) {
+                    goldOption.classList.add('selected');
+                    console.log('已选中金黄色主题选项');
+                }
+                
+                // 更新卡片颜色 - 使用window对象确保函数可用
+                if (typeof window.updateCardColors === 'function') {
+                    window.updateCardColors();
+                    console.log('已执行updateCardColors函数');
+                } else {
+                    console.warn('updateCardColors函数不可用，将通过全局变量设置');
+                    // 设置全局变量
+                    window.currentColor = goldThemeClass;
+                }
+                
+                // 直接向代码流iframe发送颜色信息
+                setTimeout(function() {
+                    const iframe = document.querySelector('iframe[src*="code-stream.html"]');
+                    if (iframe && iframe.contentWindow) {
+                        console.log('向代码流发送金黄色主题');
+                        iframe.contentWindow.postMessage({
+                            type: 'changeTheme',
+                            color: goldColor
+                        }, '*');
+                        
+                        // 多次发送确保生效
+                        for (let i = 0; i < 3; i++) {
+                            setTimeout(() => {
+                                iframe.contentWindow.postMessage({
+                                    type: 'changeTheme',
+                                    color: goldColor
+                                }, '*');
+                            }, 500 * (i + 1));
+                        }
+                    } else {
+                        console.warn('未找到代码流iframe，无法直接发送颜色');
+                    }
+                }, 1000);
+            }, 100);
+            
+            // 监听主题变化事件，以便实时更新代码流颜色
+            document.addEventListener('click', function(event) {
+                // 检查是否点击了颜色选项
+                if (event.target.classList.contains('color-option') || 
+                    event.target.closest('.color-option')) {
+                    
+                    const colorOption = event.target.classList.contains('color-option') ? 
+                                      event.target : 
+                                      event.target.closest('.color-option');
+                    
+                    // 获取新选择的主题类
+                    const newThemeClass = colorOption.getAttribute('data-color');
+                    if (newThemeClass) {
+                        console.log('检测到颜色选择变化:', newThemeClass);
+                        // 让updateCardColors函数处理颜色变化
+                    }
+                }
+            });
+        });
+    </script>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <!-- 添加本地备份，确保html2canvas可用 -->
     <script>

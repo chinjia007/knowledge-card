@@ -4,13 +4,17 @@
  */
 document.addEventListener('DOMContentLoaded', function() {
     // 立即检测并记录卡片初始颜色
-    const initialCardColor = detectCardColor();
-    console.log('检测到卡片初始颜色:', initialCardColor);
+    const initialCardColor = 'rgba(255, 215, 0, 0.75)'; // 始终使用金黄色作为初始颜色
+    console.log('设置默认金黄色:', initialCardColor);
     
     // 提取RGB值并设置CSS变量
     const rgbValues = extractRGB(initialCardColor);
     document.documentElement.style.setProperty('--theme-color-rgb', rgbValues);
     console.log('设置主题色RGB变量:', rgbValues);
+    
+    // 保存全局变量以供后续使用
+    window.lastAppliedColor = initialCardColor;
+    window.lastDetectedThemeColor = initialCardColor;
     
     // 创建背景容器
     const backgroundContainer = document.createElement('div');
@@ -32,26 +36,23 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 在iframe加载完成后立即应用颜色
     function applyInitialColor() {
-        // 检测当前卡片颜色
-        const cardColor = detectCardColor();
-        console.log('初始卡片颜色:', cardColor);
+        console.log('初始金黄色:', initialCardColor);
 
         // 立即应用颜色
         try {
-            console.log('向iframe发送初始颜色');
+            console.log('向iframe发送初始金黄色');
             iframe.contentWindow.postMessage({
                 type: 'changeTheme',
-                color: cardColor
+                color: initialCardColor
             }, '*');
-            lastAppliedColor = cardColor;
             
             // 额外的检查，确保颜色被应用
             for (let i = 0; i < 5; i++) {
                 setTimeout(() => {
-                    console.log(`第${i+1}次发送颜色确认`);
+                    console.log(`第${i+1}次发送金黄色确认`);
                     iframe.contentWindow.postMessage({
                         type: 'changeTheme',
-                        color: cardColor
+                        color: initialCardColor
                     }, '*');
                 }, 300 * (i + 1));
             }
@@ -388,6 +389,28 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 获取当前卡片颜色并设置相应的代码流颜色
     function detectCardColor() {
+        // 先检查是否有全局设置的颜色
+        if (window.lastAppliedColor) {
+            console.log('使用上次应用的颜色:', window.lastAppliedColor);
+            return window.lastAppliedColor;
+        }
+        
+        // 检查卡片元素的当前主题类
+        const card = document.querySelector('.card');
+        if (card) {
+            const themeClass = Array.from(card.classList)
+                .find(cls => cls.startsWith('theme-'));
+            
+            if (themeClass) {
+                // 如果找到主题类，获取对应的RGB值
+                const themeRGB = getThemeRGB(themeClass);
+                const themeColor = `rgba(${themeRGB}, 0.75)`;
+                console.log('通过主题类检测到颜色:', themeColor);
+                return themeColor;
+            }
+        }
+        
+        // 常规检测方法
         const cardElement = document.querySelector('.card-container') || 
                             document.querySelector('.knowledge-card') || 
                             document.querySelector('[class*="card"]');
@@ -399,13 +422,70 @@ document.addEventListener('DOMContentLoaded', function() {
             if (cardColor === 'rgba(0, 0, 0, 0)' || cardColor === 'transparent') {
                 cardColor = computedStyle.borderColor || 
                            computedStyle.color || 
-                           'rgba(0, 128, 128, 0.75)'; // 默认使用青色而非绿色
+                           'rgba(255, 215, 0, 0.75)'; // 默认使用金黄色
             }
             
+            console.log('通过计算样式检测到颜色:', cardColor);
             return cardColor;
         }
         
-        return 'rgba(0, 128, 128, 0.75)'; // 默认使用青色而非绿色
+        // 默认返回金黄色
+        console.log('未检测到卡片元素，返回默认金黄色');
+        return 'rgba(255, 215, 0, 0.75)';
+    }
+    
+    // 根据主题类名获取对应的RGB值
+    function getThemeRGB(themeClass) {
+        // 主题颜色映射表
+        const themeColorMap = {
+            'theme-softpink': '255, 192, 203',
+            'theme-lilac': '200, 162, 200',
+            'theme-mint': '152, 255, 152',
+            'theme-peach': '255, 229, 180',
+            'theme-skyblue': '135, 206, 235',
+            'theme-marigold': '255, 165, 0',
+            'theme-babyblue': '137, 207, 240',
+            'theme-lavender': '180, 160, 240',
+            'theme-sage': '186, 208, 136',
+            'theme-coral': '255, 127, 80',
+            'theme-turquoise': '48, 213, 200',
+            'theme-blush': '255, 111, 207',
+            'theme-butter': '255, 255, 102',
+            'theme-periwinkle': '204, 204, 255',
+            'theme-pistachio': '147, 197, 114',
+            'theme-bubblegum': '255, 105, 180',
+            'theme-cloudy': '200, 200, 225',
+            'theme-banana': '255, 225, 53',
+            'theme-seafoam': '120, 222, 213',
+            'theme-strawberry': '252, 90, 141',
+            'theme-slate': '112, 128, 144',
+            'theme-sunflower': '255, 215, 0',
+            'theme-moss': '134, 180, 102',
+            'theme-cornflower': '100, 149, 237',
+            'theme-grad-yellow-orange': '255, 190, 11',
+            'theme-grad-pink': '255, 105, 180',
+            'theme-grad-cyan-blue': '0, 190, 214',
+            'theme-grad-purple': '128, 0, 128',
+            'theme-grad-purple-pink': '180, 70, 200',
+            'theme-grad-green': '76, 187, 23',
+            'theme-grad-pink-purple': '219, 112, 219',
+            'theme-grad-blue-purple': '65, 105, 225',
+            'theme-grad-teal-green': '20, 180, 170',
+            'theme-grad-blue': '30, 144, 255',
+            'theme-grad-yellow': '255, 223, 0',
+            'theme-grad-light-blue': '173, 216, 230',
+            'theme-grad-orange-red': '255, 99, 71',
+            'theme-grad-purple-light': '147, 112, 219',
+            'theme-grad-teal': '0, 128, 128',
+            'theme-grad-peach': '255, 218, 185',
+            'theme-grad-light-green': '144, 238, 144',
+            'theme-grad-lavender': '230, 230, 250',
+            'theme-grad-pink-red': '255, 20, 147',
+            'theme-grad-orange': '255, 165, 0'
+        };
+        
+        // 返回主题对应的RGB值，如果找不到则返回金黄色
+        return themeColorMap[themeClass] || '255, 215, 0';
     }
 
     // 提取RGB值的函数
@@ -418,7 +498,7 @@ document.addEventListener('DOMContentLoaded', function() {
             g = parseInt(rgbMatch[2].trim());
             b = parseInt(rgbMatch[3].trim());
         } else {
-            r = 0; g = 128; b = 128; // 默认值改为青色
+            r = 255; g = 215; b = 0; // 默认值为金黄色
         }
         
         return `${r}, ${g}, ${b}`;
@@ -866,26 +946,320 @@ setTimeout(function() {
         }
         
         // 初始化按钮颜色
-        const initialCardColor = (function detectCardColor() {
-            const cardElement = document.querySelector('.card-container') || 
-                                document.querySelector('.knowledge-card') || 
-                                document.querySelector('[class*="card"]');
-            
-            if (cardElement) {
-                const computedStyle = window.getComputedStyle(cardElement);
-                let cardColor = computedStyle.backgroundColor || computedStyle.background || '';
-                
-                if (cardColor === 'rgba(0, 0, 0, 0)' || cardColor === 'transparent') {
-                    cardColor = computedStyle.borderColor || 
-                               computedStyle.color || 
-                               'rgba(15, 255, 15, 0.75)';
+        const initialCardColor = 'rgba(255, 215, 0, 0.75)'; // 直接使用金黄色
+        
+        updateButtonColor(initialCardColor);
+        
+        // 点击切换背景显示/隐藏
+        visibleButton.addEventListener('click', function() {
+            const backgroundContainer = document.querySelector('.background-container');
+            if (backgroundContainer) {
+                if (backgroundContainer.style.display === 'none') {
+                    // 显示背景，开启状态，使用红色
+                    backgroundContainer.style.display = 'block';
+                    visibleButton.setAttribute('data-state', 'on');
+                    
+                    // 添加按钮状态样式 - 固定红色
+                    visibleButton.querySelector('.ai-core').style.background = 'rgba(255, 60, 60, 0.9)';
+                    visibleButton.querySelector('.ai-pulse').style.background = 'rgba(255, 60, 60, 0.15)';
+                    visibleButton.querySelectorAll('.ai-ring').forEach(ring => {
+                        ring.style.borderColor = 'rgba(255, 60, 60, 0.7)';
+                        ring.style.boxShadow = '0 0 20px rgba(255, 60, 60, 0.6), 0 0 5px rgba(255, 60, 60, 0.9) inset';
+                        ring.style.filter = 'blur(0.5px) brightness(1.3)';
+                    });
+                    
+                    // 添加透明效果到应用容器
+                    const appContainer = document.querySelector('.app-container');
+                    if (appContainer) {
+                        const previewContainer = document.querySelector('.preview-container');
+                        if (previewContainer) {
+                            previewContainer.style.backgroundColor = 'rgba(255, 255, 255, 0.7)';
+                            previewContainer.style.backdropFilter = 'blur(5px)';
+                        }
+                    }
+                } else {
+                    // 隐藏背景，关闭状态，使用主题色
+                    backgroundContainer.style.display = 'none';
+                    visibleButton.setAttribute('data-state', 'off');
+                    
+                    // 重新检测当前主题色
+                    const currentCardColor = detectCardColor();
+                    const themeRGB = extractRGB(currentCardColor);
+                    
+                    // 更新全局CSS变量
+                    document.documentElement.style.setProperty('--theme-color-rgb', themeRGB);
+                    console.log('更新备用按钮主题色:', themeRGB);
+                    
+                    // 更新按钮状态样式，使用主题色
+                    visibleButton.querySelector('.ai-core').style.background = `rgba(${themeRGB}, 0.9)`;
+                    visibleButton.querySelector('.ai-pulse').style.background = `rgba(${themeRGB}, 0.15)`;
+                    visibleButton.querySelectorAll('.ai-ring').forEach(ring => {
+                        // 移除可能存在的默认样式
+                        ring.style.removeProperty('border-color');
+                        ring.style.borderColor = `rgba(${themeRGB}, 0.7)`;
+                        ring.style.boxShadow = `0 0 20px rgba(${themeRGB}, 0.6), 0 0 5px rgba(${themeRGB}, 0.9) inset`;
+                        ring.style.filter = 'blur(0.5px) brightness(1.3)';
+                    });
+                    
+                    // 恢复应用容器背景
+                    const appContainer = document.querySelector('.app-container');
+                    if (appContainer) {
+                        const previewContainer = document.querySelector('.preview-container');
+                        if (previewContainer) {
+                            previewContainer.style.backgroundColor = 'white';
+                            previewContainer.style.backdropFilter = 'none';
+                        }
+                    }
                 }
                 
-                return cardColor;
+                // 还可以通过postMessage向iframe发送消息实现额外控制
+                try {
+                    const iframe = backgroundContainer.querySelector('iframe');
+                    if (iframe && iframe.contentWindow) {
+                        iframe.contentWindow.postMessage('toggle', '*');
+                    }
+                } catch(e) {
+                    console.error('无法向代码流框架发送消息', e);
+                }
+            } else {
+                console.error('找不到背景容器');
+            }
+        });
+        
+        // 添加到页面
+        document.body.appendChild(visibleButton);
+        console.log('已添加可见控制按钮');
+    } else {
+        console.log('控制按钮已存在，应用强制可见样式');
+        existingButton.style.cssText = `
+            position: fixed !important;
+            bottom: 30px !important;
+            right: 30px !important;
+            width: 48px !important;
+            height: 48px !important;
+            z-index: 9999 !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            display: flex !important;
+        `;
+    }
+    
+    // 监听颜色变化事件
+    window.addEventListener('message', function(event) {
+        if (event.data && event.data.type === 'themeUpdated') {
+            console.log('收到主题更新，更新按钮颜色:', event.data.color);
+            updateButtonColor(event.data.color);
+        }
+    });
+}, 1000); 
+
+// 紧急恢复按钮代码
+setTimeout(function() {
+    // 检查按钮是否存在
+    let existingButton = document.querySelector('.ai-toggle');
+    if (!existingButton) {
+        console.log('创建新的控制按钮');
+        
+        // 创建新按钮
+        const visibleButton = document.createElement('div');
+        visibleButton.className = 'ai-toggle visible-toggle';
+        visibleButton.innerHTML = `
+            <div class="ai-core"></div>
+            <div class="ai-ring ring1"></div>
+            <div class="ai-ring ring2"></div>
+            <div class="ai-ring ring3"></div>
+            <div class="ai-pulse"></div>
+        `;
+        
+        // 设置固定样式
+        visibleButton.style.cssText = `
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: rgba(5, 10, 20, 0.9);
+            box-shadow: 0 0 15px rgba(var(--theme-color-rgb), 0.5), 0 0 30px rgba(var(--theme-color-rgb), 0.3);
+            cursor: pointer;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        `;
+        
+        // 添加内部元素样式
+        const visibleButtonStyle = document.createElement('style');
+        visibleButtonStyle.textContent = `
+            .visible-toggle {
+                animation: float 3s ease-in-out infinite;
+                backdrop-filter: blur(3px);
             }
             
-            return 'rgba(15, 255, 15, 0.75)';
-        })();
+            .visible-toggle::after {
+                content: '';
+                position: absolute;
+                top: -10px;
+                right: -10px;
+                bottom: -10px;
+                left: -10px;
+                border-radius: 50%;
+                background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+                z-index: -1;
+                animation: glow 4s infinite;
+            }
+            
+            .visible-toggle .ai-core {
+                width: 25px;
+                height: 25px;
+                border-radius: 50%;
+                background: rgba(var(--theme-color-rgb), 0.9);
+                box-shadow: 0 0 10px rgba(var(--theme-color-rgb), 0.8), 0 0 20px rgba(var(--theme-color-rgb), 0.4);
+                animation: pulse 2s ease-in-out infinite;
+            }
+            
+            /* 为备用按钮添加状态指示 */
+            .visible-toggle[data-state="on"] .ai-core {
+                background: rgba(255, 60, 60, 0.9) !important;
+                box-shadow: 0 0 10px rgba(255, 60, 60, 0.8), 0 0 20px rgba(255, 60, 60, 0.4) !important;
+            }
+            
+            .visible-toggle[data-state="off"] .ai-core {
+                background: rgba(var(--theme-color-rgb), 0.9) !important;
+                box-shadow: 0 0 10px rgba(var(--theme-color-rgb), 0.8), 0 0 20px rgba(var(--theme-color-rgb), 0.4) !important;
+            }
+            
+            .visible-toggle[data-state="off"] .ai-ring {
+                border-color: rgba(var(--theme-color-rgb), 0.6) !important;
+            }
+            
+            .visible-toggle[data-state="on"] .ai-ring {
+                border-color: rgba(255, 60, 60, 0.6) !important;
+            }
+            
+            .visible-toggle[data-state="on"] .ai-pulse {
+                background: rgba(255, 60, 60, 0.15) !important;
+            }
+            
+            .visible-toggle[data-state="off"] .ai-pulse {
+                background: rgba(var(--theme-color-rgb), 0.15) !important;
+            }
+            
+            @keyframes glow {
+                0%, 100% {
+                    opacity: 0.3;
+                    transform: scale(1);
+                }
+                50% {
+                    opacity: 0.6;
+                    transform: scale(1.2);
+                }
+            }
+            
+            .visible-toggle .ai-ring {
+                position: absolute;
+                border-radius: 50%;
+                border: 2px solid rgba(var(--theme-color-rgb), 0.6);
+                opacity: 0;
+                filter: blur(0.5px);
+            }
+            
+            .visible-toggle .ring1 {
+                width: 25px;
+                height: 25px;
+                animation: ripple 2.5s ease-out infinite;
+                animation-delay: 0s;
+                clip-path: polygon(
+                    50% 0%, 61% 19%, 98% 35%, 71% 60%, 
+                    98% 100%, 50% 83%, 0% 100%, 21% 61%, 
+                    0% 35%, 35% 20%
+                );
+                transform-origin: center;
+            }
+            
+            .visible-toggle .ring2 {
+                width: 35px;
+                height: 35px;
+                animation: electricity 3s ease-in-out infinite;
+                animation-delay: 0.5s;
+                border-style: dashed;
+                border-width: 1px;
+            }
+            
+            .visible-toggle .ring3 {
+                width: 45px;
+                height: 45px;
+                animation: plasma 3.5s cubic-bezier(0.36, 0.66, 0.04, 1) infinite;
+                animation-delay: 1s;
+                border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+            }
+            
+            .visible-toggle .ai-pulse {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                border-radius: 50%;
+                background: rgba(var(--theme-color-rgb), 0.15);
+                animation: aiPulse 2s ease-in-out infinite;
+            }
+            
+            /* 悬停效果 */
+            .visible-toggle:hover {
+                transform: scale(1.1);
+                box-shadow: 0 0 20px rgba(var(--theme-color-rgb), 0.5);
+            }
+        `;
+        document.head.appendChild(visibleButtonStyle);
+        
+        // 定义更新按钮颜色的函数
+        function updateButtonColor(color) {
+            // 提取RGB值
+            let r, g, b;
+            const rgbMatch = color.match(/rgba?\(([^,]+),([^,]+),([^,]+)/);
+            
+            if (rgbMatch) {
+                r = parseInt(rgbMatch[1].trim());
+                g = parseInt(rgbMatch[2].trim());
+                b = parseInt(rgbMatch[3].trim());
+            } else {
+                r = 15; g = 255; b = 15; // 默认值
+            }
+            
+            // 创建一个新的样式标签来更新按钮颜色
+            let buttonColorStyle = document.getElementById('button-color-style');
+            if (!buttonColorStyle) {
+                buttonColorStyle = document.createElement('style');
+                buttonColorStyle.id = 'button-color-style';
+                document.head.appendChild(buttonColorStyle);
+            }
+            
+            // 更新按钮颜色样式
+            buttonColorStyle.textContent = `
+                .visible-toggle .ai-core {
+                    background: rgba(${r}, ${g}, ${b}, 0.9) !important;
+                    box-shadow: 0 0 10px rgba(${r}, ${g}, ${b}, 0.8) !important;
+                }
+                
+                .visible-toggle .ai-ring {
+                    border-color: rgba(${r}, ${g}, ${b}, 0.6) !important;
+                }
+                
+                .visible-toggle .ai-pulse {
+                    background: rgba(${r}, ${g}, ${b}, 0.15) !important;
+                }
+                
+                .visible-toggle {
+                    box-shadow: 0 0 15px rgba(${r}, ${g}, ${b}, 0.3), 0 0 5px rgba(255, 255, 255, 0.2) !important;
+                }
+                
+                .visible-toggle:hover {
+                    box-shadow: 0 0 20px rgba(${r}, ${g}, ${b}, 0.5) !important;
+                }
+            `;
+        }
+        
+        // 初始化按钮颜色
+        const initialCardColor = 'rgba(255, 215, 0, 0.75)'; // 直接使用金黄色
         
         updateButtonColor(initialCardColor);
         
